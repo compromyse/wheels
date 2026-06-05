@@ -51,7 +51,7 @@
             export PATH="$(pwd)/bin:$PATH"
             pg-start
 
-            tmux -L monzieur
+            tmux -L wheels
 
             pg-stop
           '')
