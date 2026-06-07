@@ -15,5 +15,7 @@ Rails.application.routes.draw do
   end
 
   resources :factories,            only: [ :show ]
-  resources :distribution_centers, only: [ :show ]
+  resources :distribution_centers, only: [ :show ] do
+    resources :bike_requests, only: [ :new, :create ]
+  end
 end

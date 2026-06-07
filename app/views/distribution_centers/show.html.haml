@@ -1,3 +1,6 @@
 - content_for :title, @distribution_center.name
 %h1.text-3xl.font-bold.text-gray-900.mb-8= @distribution_center.name
-%p.text-xl.text-gray-500 Distribution center dashboard content goes here.
+
+= link_to new_distribution_center_bike_request_path(@distribution_center), class: "flex items-center justify-between px-6 py-5 border-2 border-gray-900 hover:bg-gray-100 transition-colors" do
+  %span.text-2xl.font-bold.text-gray-900 Request Bikes
+  %span.text-gray-500 →
