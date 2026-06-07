@@ -19,6 +19,7 @@
           memcached
 
           libyaml
+          foreman
 
           (pkgs.writeShellScriptBin "pg-stop" ''
             pg_ctl -D $PGDATA -U postgres stop
