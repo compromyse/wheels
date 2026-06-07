@@ -10,9 +10,24 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_05_134045) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_07_165016) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "bike_requests", force: :cascade do |t|
+    t.string "contact_email", null: false
+    t.string "contact_name", null: false
+    t.datetime "created_at", null: false
+    t.bigint "distribution_center_id", null: false
+    t.date "due_date", null: false
+    t.bigint "factory_id", null: false
+    t.string "organization_name", null: false
+    t.string "phone", null: false
+    t.string "requestor_name", null: false
+    t.datetime "updated_at", null: false
+    t.index ["distribution_center_id"], name: "index_bike_requests_on_distribution_center_id"
+    t.index ["factory_id"], name: "index_bike_requests_on_factory_id"
+  end
 
   create_table "distribution_centers", force: :cascade do |t|
     t.datetime "created_at", null: false
@@ -58,6 +73,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_05_134045) do
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 
+  add_foreign_key "bike_requests", "distribution_centers"
+  add_foreign_key "bike_requests", "factories"
   add_foreign_key "user_distribution_centers", "distribution_centers"
   add_foreign_key "user_distribution_centers", "users"
   add_foreign_key "user_factories", "factories"
