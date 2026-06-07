@@ -1,0 +1,59 @@
+- content_for :title, "Add User"
+%h1.text-3xl.font-bold.text-gray-900.mb-8 Add User
+
+= form_with model: [:admin, @user], class: "space-y-8 max-w-lg" do |f|
+  .space-y-2
+    = f.label :name, "Full name", class: "block text-xl font-medium text-gray-900"
+    = f.text_field :name, autofocus: true,
+        class: "w-full px-4 py-3 text-xl border-2 border-gray-400 focus:border-gray-900 focus:outline-none"
+    - @user.errors[:name].each do |msg|
+      %p.text-lg.text-red-700= msg
+
+  .space-y-2
+    = f.label :email, "Email address", class: "block text-xl font-medium text-gray-900"
+    = f.email_field :email,
+        class: "w-full px-4 py-3 text-xl border-2 border-gray-400 focus:border-gray-900 focus:outline-none"
+    - @user.errors[:email].each do |msg|
+      %p.text-lg.text-red-700= msg
+
+  .space-y-2
+    = f.label :password, "Password", class: "block text-xl font-medium text-gray-900"
+    = f.password_field :password,
+        class: "w-full px-4 py-3 text-xl border-2 border-gray-400 focus:border-gray-900 focus:outline-none"
+
+  .space-y-2
+    = f.label :password_confirmation, "Confirm password", class: "block text-xl font-medium text-gray-900"
+    = f.password_field :password_confirmation,
+        class: "w-full px-4 py-3 text-xl border-2 border-gray-400 focus:border-gray-900 focus:outline-none"
+
+  .flex.items-center.gap-3
+    = f.check_box :superadmin, class: "w-6 h-6 border-2 border-gray-400"
+    = f.label :superadmin, "Superadmin", class: "text-xl font-medium text-gray-900"
+
+  - if @factories.any?
+    %fieldset.space-y-3
+      %legend.text-xl.font-semibold.text-gray-900.mb-3 Factory Access
+      - @factories.each_with_index do |factory, i|
+        .flex.items-center.gap-4.py-3.border-b.border-gray-200
+          %input{type: "hidden", name: "factory_assignments[#{i}][factory_id]", value: factory.id}
+          %input{type: "checkbox", name: "factory_assignments[#{i}][enabled]", id: "factory_#{factory.id}", class: "w-6 h-6 border-2 border-gray-400"}
+          %label{for: "factory_#{factory.id}", class: "text-xl text-gray-900 flex-1"}= factory.name
+          %select{name: "factory_assignments[#{i}][role]", class: "px-3 py-2 text-lg border-2 border-gray-400 bg-white"}
+            %option{value: "volunteer"} Volunteer
+            %option{value: "admin"} Admin
+
+  - if @distribution_centers.any?
+    %fieldset.space-y-3
+      %legend.text-xl.font-semibold.text-gray-900.mb-3 Distribution Center Access
+      - @distribution_centers.each_with_index do |dc, i|
+        .flex.items-center.gap-4.py-3.border-b.border-gray-200
+          %input{type: "hidden", name: "distribution_center_assignments[#{i}][distribution_center_id]", value: dc.id}
+          %input{type: "checkbox", name: "distribution_center_assignments[#{i}][enabled]", id: "dc_#{dc.id}", class: "w-6 h-6 border-2 border-gray-400"}
+          %label{for: "dc_#{dc.id}", class: "text-xl text-gray-900 flex-1"}= dc.name
+          %select{name: "distribution_center_assignments[#{i}][role]", class: "px-3 py-2 text-lg border-2 border-gray-400 bg-white"}
+            %option{value: "volunteer"} Volunteer
+            %option{value: "admin"} Admin
+
+  .flex.gap-4
+    = f.submit "Add User", class: "px-6 py-3 text-lg font-bold text-white bg-gray-900 hover:bg-gray-700 cursor-pointer transition-colors"
+    = link_to "Cancel", admin_users_path, class: "px-6 py-3 text-lg font-medium text-gray-900 underline"

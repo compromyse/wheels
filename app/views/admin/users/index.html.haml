@@ -1,0 +1,23 @@
+- content_for :title, "Users"
+.flex.items-center.justify-between.mb-8
+  %h1.text-3xl.font-bold.text-gray-900 Users
+  = link_to "Add User", new_admin_user_path, class: "px-6 py-3 text-lg font-bold text-white bg-gray-900 hover:bg-gray-700 transition-colors"
+
+- if @users.any?
+  .space-y-2
+    - @users.each do |user|
+      .flex.items-center.justify-between.px-6.py-5.border-2.border-gray-900
+        .space-y-1
+          %p.text-2xl.font-bold.text-gray-900= user.name
+          %p.text-lg.text-gray-500= user.email
+          - assignments = []
+          - assignments << "Superadmin" if user.superadmin?
+          - assignments += user.factories.map(&:name)
+          - assignments += user.distribution_centers.map(&:name)
+          %p.text-lg.text-gray-600= assignments.join(" · ")
+        - unless user == current_user
+          = button_to "Remove", admin_user_path(user), method: :delete,
+              data: { turbo_confirm: "Remove #{user.name}?" },
+              class: "px-4 py-2 text-lg font-medium text-red-700 underline bg-transparent border-0 cursor-pointer shrink-0"
+- else
+  %p.text-xl.text-gray-500 No users yet.

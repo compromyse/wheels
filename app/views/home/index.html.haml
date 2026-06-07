@@ -1,0 +1,28 @@
+- content_for :title, "Home"
+%h1.text-3xl.font-bold.text-gray-900.mb-8 Welcome, #{current_user.name}
+
+.space-y-10
+  - if @factories.any?
+    %section
+      %h2.text-sm.font-semibold.text-gray-500.uppercase.tracking-widest.mb-3 Factories
+      .space-y-2
+        - @factories.each do |factory|
+          = link_to factory_path(factory), class: "flex items-center justify-between px-6 py-5 border-2 border-gray-900 hover:bg-gray-100 transition-colors" do
+            %span.text-2xl.font-bold.text-gray-900= factory.name
+            %span.text-gray-500 →
+
+  - if @distribution_centers.any?
+    %section
+      %h2.text-sm.font-semibold.text-gray-500.uppercase.tracking-widest.mb-3 Distribution Centers
+      .space-y-2
+        - @distribution_centers.each do |dc|
+          = link_to distribution_center_path(dc), class: "flex items-center justify-between px-6 py-5 border-2 border-gray-900 hover:bg-gray-100 transition-colors" do
+            %span.text-2xl.font-bold.text-gray-900= dc.name
+            %span.text-gray-500 →
+
+  - if current_user.superadmin?
+    %section
+      %h2.text-sm.font-semibold.text-gray-500.uppercase.tracking-widest.mb-3 Administration
+      = link_to admin_root_path, class: "flex items-center justify-between px-6 py-5 border-2 border-gray-900 hover:bg-gray-100 transition-colors" do
+        %span.text-2xl.font-bold.text-gray-900 Admin Panel
+        %span.text-gray-500 →

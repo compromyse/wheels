@@ -13,6 +13,19 @@
     %link{:href => "/icon.png", :rel => "icon", :type => "image/png"}/
     %link{:href => "/icon.svg", :rel => "icon", :type => "image/svg+xml"}/
     %link{:href => "/icon.png", :rel => "apple-touch-icon"}/
+    = stylesheet_link_tag "tailwind", "data-turbo-track": "reload"
     = stylesheet_link_tag :app, "data-turbo-track": "reload"
-  %body
-    = yield
+    = javascript_importmap_tags
+  %body.bg-white.min-h-screen
+    - if current_user
+      %nav.border-b-2.border-gray-900.px-6.py-4.flex.items-center.justify-between
+        = link_to "Wheels", root_path, class: "text-2xl font-bold text-gray-900"
+        .flex.items-center.gap-8
+          %span.text-lg.text-gray-700= current_user.name
+          = button_to "Log out", logout_path, method: :delete, class: "text-lg font-medium text-gray-900 underline bg-transparent border-0 cursor-pointer"
+    - if flash[:notice]
+      .px-6.py-3.bg-green-100.border-b.border-green-300.text-green-900.text-lg= flash[:notice]
+    - if flash[:alert]
+      .px-6.py-3.bg-red-100.border-b.border-red-300.text-red-900.text-lg= flash[:alert]
+    .px-6.py-8
+      = yield

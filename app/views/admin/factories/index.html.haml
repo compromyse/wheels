@@ -1,0 +1,15 @@
+- content_for :title, "Factories"
+.flex.items-center.justify-between.mb-8
+  %h1.text-3xl.font-bold.text-gray-900 Factories
+  = link_to "Add Factory", new_admin_factory_path, class: "px-6 py-3 text-lg font-bold text-white bg-gray-900 hover:bg-gray-700 transition-colors"
+
+- if @factories.any?
+  .space-y-2
+    - @factories.each do |factory|
+      .flex.items-center.justify-between.px-6.py-5.border-2.border-gray-900
+        %span.text-2xl.font-bold.text-gray-900= factory.name
+        = button_to "Remove", admin_factory_path(factory), method: :delete,
+            data: { turbo_confirm: "Remove #{factory.name}?" },
+            class: "px-4 py-2 text-lg font-medium text-red-700 underline bg-transparent border-0 cursor-pointer"
+- else
+  %p.text-xl.text-gray-500 No factories yet.

@@ -1,0 +1,13 @@
+- content_for :title, "Admin Panel"
+%h1.text-3xl.font-bold.text-gray-900.mb-8 Admin Panel
+
+.space-y-2
+  = link_to admin_factories_path, class: "flex items-center justify-between px-6 py-5 border-2 border-gray-900 hover:bg-gray-100 transition-colors" do
+    %span.text-2xl.font-bold.text-gray-900 Factories
+    %span.text-gray-500 →
+  = link_to admin_distribution_centers_path, class: "flex items-center justify-between px-6 py-5 border-2 border-gray-900 hover:bg-gray-100 transition-colors" do
+    %span.text-2xl.font-bold.text-gray-900 Distribution Centers
+    %span.text-gray-500 →
+  = link_to admin_users_path, class: "flex items-center justify-between px-6 py-5 border-2 border-gray-900 hover:bg-gray-100 transition-colors" do
+    %span.text-2xl.font-bold.text-gray-900 Users
+    %span.text-gray-500 →
