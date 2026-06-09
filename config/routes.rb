@@ -14,6 +14,7 @@ Rails.application.routes.draw do
     resources :users,                only: [ :index, :new, :create, :destroy ]
   end
 
+  resources :bike_requests,        only: [ :update ]
   resources :factories,            only: [ :show ]
   resources :distribution_centers, only: [ :show ] do
     resources :bike_requests, only: [ :new, :create ]

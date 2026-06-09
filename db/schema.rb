@@ -10,12 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_07_165016) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_07_173911) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
   create_table "bike_requests", force: :cascade do |t|
     t.integer "age"
+    t.bigint "assignee_id"
     t.integer "bike_type", null: false
     t.datetime "created_at", null: false
     t.bigint "distribution_center_id", null: false
@@ -26,10 +27,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_07_165016) do
     t.string "phone", null: false
     t.string "recipient_name"
     t.string "requestor_name", null: false
+    t.integer "status", default: 0, null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
+    t.index ["assignee_id"], name: "index_bike_requests_on_assignee_id"
     t.index ["distribution_center_id"], name: "index_bike_requests_on_distribution_center_id"
     t.index ["factory_id"], name: "index_bike_requests_on_factory_id"
+    t.index ["status"], name: "index_bike_requests_on_status"
     t.index ["user_id"], name: "index_bike_requests_on_user_id"
   end
 
@@ -80,6 +84,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_07_165016) do
   add_foreign_key "bike_requests", "distribution_centers"
   add_foreign_key "bike_requests", "factories"
   add_foreign_key "bike_requests", "users"
+  add_foreign_key "bike_requests", "users", column: "assignee_id"
   add_foreign_key "user_distribution_centers", "distribution_centers"
   add_foreign_key "user_distribution_centers", "users"
   add_foreign_key "user_factories", "factories"

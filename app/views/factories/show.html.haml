@@ -1,3 +1,59 @@
 - content_for :title, @factory.name
 %h1.text-3xl.font-bold.text-gray-900.mb-8= @factory.name
-%p.text-xl.text-gray-500 Factory dashboard content goes here.
+
+- tabs = %w[requested pending completed]
+.flex.border-b-2.border-gray-900.mb-8
+  - tabs.each do |tab|
+    = link_to factory_path(@factory, tab: tab),
+        class: "px-6 py-3 text-lg font-medium #{@tab == tab ? 'font-bold border-b-4 border-gray-900 -mb-0.5' : 'text-gray-500'}" do
+      = tab.capitalize
+
+- if @bike_requests.any?
+  .space-y-4
+    - @bike_requests.each do |req|
+      .border-2.border-gray-900.px-6.py-5.space-y-4
+        .flex.items-start.justify-between.gap-4
+          .space-y-1
+            %p.text-2xl.font-bold.text-gray-900= req.recipient_name.presence || "Name unknown"
+            %p.text-lg.text-gray-600
+              = req.bike_type.capitalize
+              - if req.age.present?
+                = "· Age #{req.age}"
+              - if req.height.present?
+                = "· #{req.height}"
+          .text-right.shrink-0.space-y-1
+            %p.text-lg.font-medium.text-gray-900 Due #{req.due_date.strftime("%-m/%-d/%Y")}
+            %p.text-lg.text-gray-500= req.distribution_center.name
+
+        .space-y-1
+          %p.text-lg.text-gray-600
+            Submitted by
+            %span.text-gray-900= req.user.name
+          %p.text-lg.text-gray-600
+            Requested by
+            %span.text-gray-900= req.requestor_name
+            · #{req.phone}
+          - if req.assignee.present?
+            %p.text-lg.text-gray-600
+              Assigned to
+              %span.text-gray-900= req.assignee.name
+
+        - if req.notes.present?
+          %p.text-lg.text-gray-600= req.notes
+
+        .flex.items-center.justify-between.pt-2.border-t.border-gray-200
+          .flex.gap-4
+            - if req.requested?
+              = button_to "Mark Pending", bike_request_path(req), method: :patch, params: { status: "pending" },
+                  class: "px-6 py-3 text-lg font-bold text-white bg-gray-900 hover:bg-gray-700 cursor-pointer transition-colors border-0"
+            - elsif req.pending?
+              = button_to "Mark Completed", bike_request_path(req), method: :patch, params: { status: "completed" },
+                  class: "px-6 py-3 text-lg font-bold text-white bg-gray-900 hover:bg-gray-700 cursor-pointer transition-colors border-0"
+              = button_to "Back to Requested", bike_request_path(req), method: :patch, params: { status: "requested" },
+                  class: "px-4 py-2 text-lg font-medium text-gray-900 underline bg-transparent border-0 cursor-pointer"
+            - elsif req.completed?
+              = button_to "Back to Pending", bike_request_path(req), method: :patch, params: { status: "pending" },
+                  class: "px-4 py-2 text-lg font-medium text-gray-900 underline bg-transparent border-0 cursor-pointer"
+          %span.text-lg.text-gray-400 Print
+- else
+  %p.text-xl.text-gray-500 No #{@tab} requests.
