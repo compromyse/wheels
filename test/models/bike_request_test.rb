@@ -61,6 +61,22 @@ class BikeRequestTest < ActiveSupport::TestCase
     assert_includes br.errors[:due_date], "must be in the future"
   end
 
+  test "assignee cannot have two pending requests simultaneously" do
+    first = bike_requests(:pending_bike)
+    second = valid_bike_request
+    second.status = :pending
+    second.assignee = first.assignee
+    assert_not second.valid?
+    assert_match "already has a pending request", second.errors.full_messages.first
+  end
+
+  test "assignee can be assigned pending if they have no other pending requests" do
+    br = valid_bike_request
+    br.status = :pending
+    br.assignee = users(:no_location_user)
+    assert br.valid?
+  end
+
   test "due_date validation skipped on update" do
     br = bike_requests(:requested_bike)
     br.due_date = Date.today - 1

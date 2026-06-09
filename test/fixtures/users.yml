@@ -35,3 +35,9 @@ no_location_user:
   email: no_location@example.com
   password_digest: <%= BCrypt::Password.create("password", cost: 4) %>
   superadmin: false
+
+prod_volunteer:
+  name: Production Volunteer
+  email: prod_volunteer@example.com
+  password_digest: <%= BCrypt::Password.create("password", cost: 4) %>
+  superadmin: false

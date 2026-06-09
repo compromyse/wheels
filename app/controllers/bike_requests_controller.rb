@@ -24,20 +24,22 @@ class BikeRequestsController < ApplicationController
   end
 
   def update
-    case params[:status]
-    when "pending"
-      @bike_request.update!(status: :pending, assignee: current_user)
-    when "completed"
-      @bike_request.update!(status: :completed)
-    when "delivered"
-      @bike_request.update!(status: :delivered)
-    when "distributed"
-      @bike_request.update!(status: :distributed)
-    when "requested"
-      @bike_request.update!(status: :requested, assignee: nil)
+    attributes = case params[:status]
+    when "pending"    then { status: :pending, assignee: current_user }
+    when "completed"  then { status: :completed }
+    when "delivered"  then { status: :delivered }
+    when "distributed" then { status: :distributed }
+    when "requested"  then { status: :requested, assignee: nil }
     end
 
-    redirect_to production_path(@bike_request.production, tab: @bike_request.status)
+    original_status = @bike_request.status
+
+    if attributes && @bike_request.update(attributes)
+      redirect_to production_path(@bike_request.production, tab: @bike_request.status)
+    else
+      redirect_to production_path(@bike_request.production, tab: original_status),
+        alert: @bike_request.errors.full_messages.first
+    end
   end
 
   private

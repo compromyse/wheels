@@ -84,11 +84,11 @@ class BikeRequestsControllerTest < ActionDispatch::IntegrationTest
 
   test "update pending sets status to pending and assigns current user as assignee" do
     br = bike_requests(:requested_bike)
-    post login_path, params: { email: users(:prod_admin).email, password: "password" }
+    post login_path, params: { email: users(:prod_volunteer).email, password: "password" }
     patch bike_request_path(br), params: { status: "pending" }
     br.reload
     assert br.pending?
-    assert_equal users(:prod_admin), br.assignee
+    assert_equal users(:prod_volunteer), br.assignee
   end
 
   test "update requested clears assignee" do
@@ -126,12 +126,21 @@ class BikeRequestsControllerTest < ActionDispatch::IntegrationTest
 
   test "update redirects to production path with tab param" do
     br = bike_requests(:requested_bike)
-    post login_path, params: { email: users(:prod_admin).email, password: "password" }
+    post login_path, params: { email: users(:prod_volunteer).email, password: "password" }
     patch bike_request_path(br), params: { status: "pending" }
     assert_redirected_to production_path(productions(:main_production), tab: "pending")
   end
 
   private
+
+  test "update pending is blocked if assignee already has a pending request" do
+    # prod_admin already has pending_bike assigned in fixtures
+    post login_path, params: { email: users(:prod_admin).email, password: "password" }
+    patch bike_request_path(bike_requests(:requested_bike)), params: { status: "pending" }
+    assert_redirected_to production_path(productions(:main_production), tab: "requested")
+    assert_match "already has a pending request", flash[:alert]
+    assert bike_requests(:requested_bike).reload.requested?
+  end
 
   test "new pre-populates due_date to two weeks from today" do
     post login_path, params: { email: users(:dist_user).email, password: "password" }

@@ -12,8 +12,15 @@ class BikeRequest < ApplicationRecord
   validates :requestor_name, presence: true
   validates :due_date, presence: true
   validate :due_date_in_future, on: :create
+  validate :assignee_has_no_other_pending, if: -> { pending? && assignee.present? }
 
   private
+
+  def assignee_has_no_other_pending
+    if BikeRequest.where(status: :pending, assignee: assignee).where.not(id: id).exists?
+      errors.add(:base, "#{assignee.name} already has a pending request")
+    end
+  end
 
   def due_date_in_future
     return unless due_date

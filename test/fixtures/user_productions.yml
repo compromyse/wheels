@@ -12,3 +12,8 @@ superadmin_loc_main:
   user: superadmin_with_location
   production: main_production
   role: admin
+
+prod_volunteer_main:
+  user: prod_volunteer
+  production: main_production
+  role: volunteer
