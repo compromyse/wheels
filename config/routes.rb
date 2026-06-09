@@ -10,7 +10,7 @@ Rails.application.routes.draw do
   namespace :admin do
     root to: "dashboard#index"
     resources :factories,            only: [ :index, :new, :create, :destroy ]
-    resources :distribution_centers, only: [ :index, :new, :create, :destroy ]
+    resources :distribution_centers, only: [ :index, :new, :create, :edit, :update, :destroy ]
     resources :users,                only: [ :index, :new, :create, :destroy ]
   end
 

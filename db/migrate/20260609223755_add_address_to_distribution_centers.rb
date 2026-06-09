@@ -1,0 +1,5 @@
+class AddAddressToDistributionCenters < ActiveRecord::Migration[8.1]
+  def change
+    add_column :distribution_centers, :address, :string
+  end
+end

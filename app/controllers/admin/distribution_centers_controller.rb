@@ -1,5 +1,5 @@
 class Admin::DistributionCentersController < Admin::BaseController
-  before_action :set_distribution_center, only: [:destroy]
+  before_action :set_distribution_center, only: [ :edit, :update, :destroy ]
 
   def index
     @distribution_centers = DistributionCenter.all
@@ -18,6 +18,17 @@ class Admin::DistributionCentersController < Admin::BaseController
     end
   end
 
+  def edit
+  end
+
+  def update
+    if @distribution_center.update(distribution_center_params)
+      redirect_to admin_distribution_centers_path, notice: "Distribution center updated."
+    else
+      render :edit, status: :unprocessable_entity
+    end
+  end
+
   def destroy
     @distribution_center.destroy
     redirect_to admin_distribution_centers_path, notice: "Distribution center removed."
@@ -30,6 +41,6 @@ class Admin::DistributionCentersController < Admin::BaseController
   end
 
   def distribution_center_params
-    params.require(:distribution_center).permit(:name)
+    params.require(:distribution_center).permit(:name, :address)
   end
 end
