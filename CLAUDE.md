@@ -30,8 +30,13 @@ Each card will eventually have a print button (not yet implemented — keep the 
 - Admin panel: `docs/architecture/admin.md`
 - Views, design system, partials: `docs/architecture/views.md`
 - UI design rules: `DESIGN.md`
+- Commit policy: see Commits section below
 - Testing policy: see Testing section below
 - Updating docs: see Documentation section below
+
+## Commits
+
+Do not include a Co-Authored-By line in commit messages.
 
 ## Testing
 
