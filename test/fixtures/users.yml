@@ -1,0 +1,37 @@
+# password for all users is "password"
+# BCrypt::Password.create("password") — pre-computed digest
+superadmin:
+  name: Super Admin
+  email: superadmin@example.com
+  password_digest: <%= BCrypt::Password.create("password", cost: 4) %>
+  superadmin: true
+
+prod_admin:
+  name: Production Admin
+  email: prod_admin@example.com
+  password_digest: <%= BCrypt::Password.create("password", cost: 4) %>
+  superadmin: false
+
+dist_user:
+  name: Distribution User
+  email: dist_user@example.com
+  password_digest: <%= BCrypt::Password.create("password", cost: 4) %>
+  superadmin: false
+
+multi_user:
+  name: Multi Location User
+  email: multi_user@example.com
+  password_digest: <%= BCrypt::Password.create("password", cost: 4) %>
+  superadmin: false
+
+superadmin_with_location:
+  name: Super Admin With Location
+  email: superadmin_loc@example.com
+  password_digest: <%= BCrypt::Password.create("password", cost: 4) %>
+  superadmin: true
+
+no_location_user:
+  name: No Location User
+  email: no_location@example.com
+  password_digest: <%= BCrypt::Password.create("password", cost: 4) %>
+  superadmin: false

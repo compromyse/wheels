@@ -1,0 +1,14 @@
+prod_admin_main:
+  user: prod_admin
+  production: main_production
+  role: admin
+
+multi_user_main:
+  user: multi_user
+  production: main_production
+  role: volunteer
+
+superadmin_loc_main:
+  user: superadmin_with_location
+  production: main_production
+  role: admin

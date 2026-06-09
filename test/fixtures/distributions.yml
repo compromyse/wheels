@@ -1,0 +1,7 @@
+downtown_dist:
+  name: Downtown Distribution
+  address: 123 Main St
+
+uptown_dist:
+  name: Uptown Distribution
+  address: 456 Other St

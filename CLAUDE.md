@@ -30,7 +30,12 @@ Each card will eventually have a print button (not yet implemented — keep the 
 - Admin panel: `docs/architecture/admin.md`
 - Views, design system, partials: `docs/architecture/views.md`
 - UI design rules: `DESIGN.md`
+- Testing policy: see Testing section below
 - Updating docs: see Documentation section below
+
+## Testing
+
+Every new feature and every change to existing behaviour must have tests before committing. Run the full suite with `PGDATA=$(pwd)/pgdata rails test` and confirm it passes. Do not commit with failing or missing tests.
 
 ## Documentation
 

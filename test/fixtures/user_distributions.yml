@@ -1,0 +1,9 @@
+dist_user_downtown:
+  user: dist_user
+  distribution: downtown_dist
+  role: volunteer
+
+multi_user_downtown:
+  user: multi_user
+  distribution: downtown_dist
+  role: admin
