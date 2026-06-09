@@ -5,7 +5,7 @@ class BikeRequest < ApplicationRecord
   belongs_to :assignee, class_name: "User", optional: true
 
   enum :bike_type, { male: 0, female: 1, kid: 2 }
-  enum :status, { requested: 0, pending: 1, completed: 2 }
+  enum :status, { requested: 0, pending: 1, completed: 2, delivered: 3, distributed: 4 }
 
   validates :phone, presence: true
   validates :bike_type, presence: true

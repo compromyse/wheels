@@ -3,7 +3,7 @@ class FactoriesController < ApplicationController
   before_action :check_access
 
   def show
-    @tab = params[:tab].presence_in(%w[requested pending completed]) || "requested"
+    @tab = params[:tab].presence_in(%w[requested pending completed delivered distributed]) || "requested"
     scope = @factory.bike_requests.where(status: @tab)
                     .includes(:distribution_center, :user, :assignee)
                     .order(due_date: :asc)

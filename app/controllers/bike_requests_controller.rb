@@ -29,6 +29,10 @@ class BikeRequestsController < ApplicationController
       @bike_request.update!(status: :pending, assignee: current_user)
     when "completed"
       @bike_request.update!(status: :completed)
+    when "delivered"
+      @bike_request.update!(status: :delivered)
+    when "distributed"
+      @bike_request.update!(status: :distributed)
     when "requested"
       @bike_request.update!(status: :requested, assignee: nil)
     end

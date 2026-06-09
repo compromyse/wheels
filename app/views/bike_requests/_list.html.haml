@@ -1,4 +1,4 @@
-- tabs = %w[requested pending completed]
+- tabs = %w[requested pending completed delivered distributed]
 .flex.border-b-2.border-gray-900.mb-8
   - tabs.each do |tab|
     = link_to url_for(tab: tab), class: "px-6 py-3 text-lg font-medium #{active_tab == tab ? 'font-bold border-b-4 border-gray-900 -mb-0.5' : 'text-gray-500'}" do
@@ -50,7 +50,17 @@
                 = button_to "Back to Requested", bike_request_path(req), method: :patch, params: { status: "requested" },
                     class: "px-4 py-2 text-lg font-medium text-gray-900 underline bg-transparent border-0 cursor-pointer"
               - elsif req.completed?
+                = button_to "Mark Delivered", bike_request_path(req), method: :patch, params: { status: "delivered" },
+                    class: "px-6 py-3 text-lg font-bold text-white bg-gray-900 hover:bg-gray-700 cursor-pointer transition-colors border-0"
                 = button_to "Back to Pending", bike_request_path(req), method: :patch, params: { status: "pending" },
+                    class: "px-4 py-2 text-lg font-medium text-gray-900 underline bg-transparent border-0 cursor-pointer"
+              - elsif req.delivered?
+                = button_to "Mark Distributed", bike_request_path(req), method: :patch, params: { status: "distributed" },
+                    class: "px-6 py-3 text-lg font-bold text-white bg-gray-900 hover:bg-gray-700 cursor-pointer transition-colors border-0"
+                = button_to "Back to Completed", bike_request_path(req), method: :patch, params: { status: "completed" },
+                    class: "px-4 py-2 text-lg font-medium text-gray-900 underline bg-transparent border-0 cursor-pointer"
+              - elsif req.distributed?
+                = button_to "Back to Delivered", bike_request_path(req), method: :patch, params: { status: "delivered" },
                     class: "px-4 py-2 text-lg font-medium text-gray-900 underline bg-transparent border-0 cursor-pointer"
             %span.text-lg.text-gray-400 Print
 
