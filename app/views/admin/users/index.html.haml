@@ -12,8 +12,8 @@
           %p.text-lg.text-gray-500= user.email
           - assignments = []
           - assignments << "Superadmin" if user.superadmin?
-          - assignments += user.factories.map(&:name)
-          - assignments += user.distribution_centers.map(&:name)
+          - assignments += user.productions.map(&:name)
+          - assignments += user.distributions.map(&:name)
           %p.text-lg.text-gray-600= assignments.join(" · ")
         - unless user == current_user
           = button_to "Remove", admin_user_path(user), method: :delete,

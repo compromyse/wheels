@@ -19,8 +19,8 @@
                 = "· #{req.height}"
           .text-right.shrink-0.space-y-1
             %p.text-lg.font-medium.text-gray-900 Due #{req.due_date.strftime("%-m/%-d/%Y")}
-            - unless factory_view
-              %p.text-lg.text-gray-500= req.distribution_center.name
+            - unless production_view
+              %p.text-lg.text-gray-500= req.distribution.name
 
         .space-y-1
           %p.text-lg.text-gray-600
@@ -38,7 +38,7 @@
         - if req.notes.present?
           %p.text-lg.text-gray-600= req.notes
 
-        - if factory_view
+        - if production_view
           .flex.items-center.justify-between.pt-2.border-t.border-gray-200
             .flex.gap-4
               - if req.requested?

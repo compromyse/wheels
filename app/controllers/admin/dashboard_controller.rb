@@ -1,7 +1,7 @@
 class Admin::DashboardController < Admin::BaseController
   def index
-    @factories = Factory.all
-    @distribution_centers = DistributionCenter.all
+    @productions = Production.all
+    @distributions = Distribution.all
     @users = User.all
   end
 end

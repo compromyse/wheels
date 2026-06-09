@@ -4,33 +4,33 @@ admin = User.find_or_create_by!(email: "admin@wheels.local") do |u|
   u.superadmin = true
 end
 
-factory = Factory.find_or_create_by!(name: "Main Factory")
-dc = DistributionCenter.find_or_create_by!(name: "Downtown Distribution")
+production = Production.find_or_create_by!(name: "Main Production")
+dist = Distribution.find_or_create_by!(name: "Downtown Distribution")
 
-# User assigned to both a factory and a distribution center
+# User assigned to both a production and a distribution
 both = User.find_or_create_by!(email: "both@wheels.local") do |u|
   u.name = "Alex Both"
   u.password = "password"
 end
-both.user_factories.find_or_create_by!(factory: factory) { |uf| uf.role = "volunteer" }
-both.user_distribution_centers.find_or_create_by!(distribution_center: dc) { |udc| udc.role = "volunteer" }
+both.user_productions.find_or_create_by!(production: production) { |up| up.role = "volunteer" }
+both.user_distributions.find_or_create_by!(distribution: dist) { |ud| ud.role = "volunteer" }
 
-# User assigned to only the factory
-factory_user = User.find_or_create_by!(email: "factory@wheels.local") do |u|
-  u.name = "Sam Factory"
+# User assigned to only the production
+production_user = User.find_or_create_by!(email: "production@wheels.local") do |u|
+  u.name = "Sam Production"
   u.password = "password"
 end
-factory_user.user_factories.find_or_create_by!(factory: factory) { |uf| uf.role = "volunteer" }
+production_user.user_productions.find_or_create_by!(production: production) { |up| up.role = "volunteer" }
 
-# User assigned to only the distribution center
-dc_user = User.find_or_create_by!(email: "dc@wheels.local") do |u|
-  u.name = "Jordan DC"
+# User assigned to only the distribution
+dist_user = User.find_or_create_by!(email: "dist@wheels.local") do |u|
+  u.name = "Jordan Dist"
   u.password = "password"
 end
-dc_user.user_distribution_centers.find_or_create_by!(distribution_center: dc) { |udc| udc.role = "volunteer" }
+dist_user.user_distributions.find_or_create_by!(distribution: dist) { |ud| ud.role = "volunteer" }
 
 puts "Seeded:"
 puts "  admin@wheels.local / password (superadmin)"
-puts "  both@wheels.local  / password (factory + distribution center)"
-puts "  factory@wheels.local / password (factory only)"
-puts "  dc@wheels.local    / password (distribution center only)"
+puts "  both@wheels.local  / password (production + distribution)"
+puts "  production@wheels.local / password (production only)"
+puts "  dist@wheels.local    / password (distribution only)"

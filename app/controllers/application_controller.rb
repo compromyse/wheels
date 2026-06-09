@@ -21,14 +21,14 @@ class ApplicationController < ActionController::Base
     render plain: "Access denied", status: :forbidden unless current_user&.superadmin?
   end
 
-  def require_factory_access(factory)
-    unless current_user&.factories&.include?(factory)
+  def require_production_access(production)
+    unless current_user&.productions&.include?(production)
       render plain: "Access denied", status: :forbidden
     end
   end
 
-  def require_distribution_center_access(dc)
-    unless current_user&.distribution_centers&.include?(dc)
+  def require_distribution_access(distribution)
+    unless current_user&.distributions&.include?(distribution)
       render plain: "Access denied", status: :forbidden
     end
   end

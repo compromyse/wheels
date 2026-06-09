@@ -2,13 +2,13 @@ class Admin::UsersController < Admin::BaseController
   before_action :set_user, only: [:destroy]
 
   def index
-    @users = User.includes(:factories, :distribution_centers).all
+    @users = User.includes(:productions, :distributions).all
   end
 
   def new
     @user = User.new
-    @factories = Factory.all
-    @distribution_centers = DistributionCenter.all
+    @productions = Production.all
+    @distributions = Distribution.all
   end
 
   def create
@@ -17,8 +17,8 @@ class Admin::UsersController < Admin::BaseController
       create_location_assignments
       redirect_to admin_users_path, notice: "User added."
     else
-      @factories = Factory.all
-      @distribution_centers = DistributionCenter.all
+      @productions = Production.all
+      @distributions = Distribution.all
       render :new, status: :unprocessable_entity
     end
   end
@@ -39,18 +39,18 @@ class Admin::UsersController < Admin::BaseController
   end
 
   def create_location_assignments
-    Array(params[:factory_assignments]).each do |assignment|
-      next unless assignment[:enabled] == "1" && assignment[:factory_id].present?
-      @user.user_factories.create!(
-        factory_id: assignment[:factory_id],
+    Array(params[:production_assignments]).each do |assignment|
+      next unless assignment[:enabled] == "1" && assignment[:production_id].present?
+      @user.user_productions.create!(
+        production_id: assignment[:production_id],
         role: assignment[:role]
       )
     end
 
-    Array(params[:distribution_center_assignments]).each do |assignment|
-      next unless assignment[:enabled] == "1" && assignment[:distribution_center_id].present?
-      @user.user_distribution_centers.create!(
-        distribution_center_id: assignment[:distribution_center_id],
+    Array(params[:distribution_assignments]).each do |assignment|
+      next unless assignment[:enabled] == "1" && assignment[:distribution_id].present?
+      @user.user_distributions.create!(
+        distribution_id: assignment[:distribution_id],
         role: assignment[:role]
       )
     end

@@ -2,22 +2,22 @@
 %h1.text-3xl.font-bold.text-gray-900.mb-8 Welcome, #{current_user.name}
 
 .space-y-10
-  - if @factories.any?
+  - if @productions.any?
     %section
-      %h2.text-sm.font-semibold.text-gray-500.uppercase.tracking-widest.mb-3 Factories
+      %h2.text-sm.font-semibold.text-gray-500.uppercase.tracking-widest.mb-3 Productions
       .space-y-2
-        - @factories.each do |factory|
-          = link_to factory_path(factory), class: "flex items-center justify-between px-6 py-5 border-2 border-gray-900 hover:bg-gray-100 transition-colors" do
-            %span.text-2xl.font-bold.text-gray-900= factory.name
+        - @productions.each do |production|
+          = link_to production_path(production), class: "flex items-center justify-between px-6 py-5 border-2 border-gray-900 hover:bg-gray-100 transition-colors" do
+            %span.text-2xl.font-bold.text-gray-900= production.name
             %span.text-gray-500 →
 
-  - if @distribution_centers.any?
+  - if @distributions.any?
     %section
-      %h2.text-sm.font-semibold.text-gray-500.uppercase.tracking-widest.mb-3 Distribution Centers
+      %h2.text-sm.font-semibold.text-gray-500.uppercase.tracking-widest.mb-3 Distributions
       .space-y-2
-        - @distribution_centers.each do |dc|
-          = link_to distribution_center_path(dc), class: "flex items-center justify-between px-6 py-5 border-2 border-gray-900 hover:bg-gray-100 transition-colors" do
-            %span.text-2xl.font-bold.text-gray-900= dc.name
+        - @distributions.each do |dist|
+          = link_to distribution_path(dist), class: "flex items-center justify-between px-6 py-5 border-2 border-gray-900 hover:bg-gray-100 transition-colors" do
+            %span.text-2xl.font-bold.text-gray-900= dist.name
             %span.text-gray-500 →
 
   - if current_user.superadmin?

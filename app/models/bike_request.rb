@@ -1,6 +1,6 @@
 class BikeRequest < ApplicationRecord
-  belongs_to :distribution_center
-  belongs_to :factory
+  belongs_to :distribution
+  belongs_to :production
   belongs_to :user
   belongs_to :assignee, class_name: "User", optional: true
 

@@ -1,10 +1,10 @@
-class DistributionCentersController < ApplicationController
-  before_action :set_distribution_center
+class DistributionsController < ApplicationController
+  before_action :set_distribution
   before_action :check_access
 
   def show
     @tab = params[:tab].presence_in(%w[requested pending completed delivered distributed]) || "requested"
-    scope = @distribution_center.bike_requests.where(status: @tab)
+    scope = @distribution.bike_requests.where(status: @tab)
                                 .includes(:user, :assignee)
                                 .order(due_date: :asc)
     @pagy, @bike_requests = pagy(scope, limit: 20)
@@ -12,11 +12,11 @@ class DistributionCentersController < ApplicationController
 
   private
 
-  def set_distribution_center
-    @distribution_center = DistributionCenter.find(params[:id])
+  def set_distribution
+    @distribution = Distribution.find(params[:id])
   end
 
   def check_access
-    require_distribution_center_access(@distribution_center)
+    require_distribution_access(@distribution)
   end
 end

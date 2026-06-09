@@ -7,14 +7,14 @@ class HomeController < ApplicationController
     if current_user.single_location?
       location = current_user.all_locations.first
       case location
-      when Factory
-        redirect_to factory_path(location) and return
-      when DistributionCenter
-        redirect_to distribution_center_path(location) and return
+      when Production
+        redirect_to production_path(location) and return
+      when Distribution
+        redirect_to distribution_path(location) and return
       end
     end
 
-    @factories = current_user.factories
-    @distribution_centers = current_user.distribution_centers
+    @productions = current_user.productions
+    @distributions = current_user.distributions
   end
 end

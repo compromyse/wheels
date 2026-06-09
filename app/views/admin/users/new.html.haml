@@ -30,27 +30,27 @@
     = f.check_box :superadmin, class: "w-6 h-6 border-2 border-gray-400"
     = f.label :superadmin, "Superadmin", class: "text-xl font-medium text-gray-900"
 
-  - if @factories.any?
+  - if @productions.any?
     %fieldset.space-y-3
-      %legend.text-xl.font-semibold.text-gray-900.mb-3 Factory Access
-      - @factories.each_with_index do |factory, i|
+      %legend.text-xl.font-semibold.text-gray-900.mb-3 Production Access
+      - @productions.each_with_index do |production, i|
         .flex.items-center.gap-4.py-3.border-b.border-gray-200
-          %input{type: "hidden", name: "factory_assignments[#{i}][factory_id]", value: factory.id}
-          %input{type: "checkbox", name: "factory_assignments[#{i}][enabled]", id: "factory_#{factory.id}", class: "w-6 h-6 border-2 border-gray-400"}
-          %label{for: "factory_#{factory.id}", class: "text-xl text-gray-900 flex-1"}= factory.name
-          %select{name: "factory_assignments[#{i}][role]", class: "px-3 py-2 text-lg border-2 border-gray-400 bg-white"}
+          %input{type: "hidden", name: "production_assignments[#{i}][production_id]", value: production.id}
+          %input{type: "checkbox", name: "production_assignments[#{i}][enabled]", id: "production_#{production.id}", class: "w-6 h-6 border-2 border-gray-400"}
+          %label{for: "production_#{production.id}", class: "text-xl text-gray-900 flex-1"}= production.name
+          %select{name: "production_assignments[#{i}][role]", class: "px-3 py-2 text-lg border-2 border-gray-400 bg-white"}
             %option{value: "volunteer"} Volunteer
             %option{value: "admin"} Admin
 
-  - if @distribution_centers.any?
+  - if @distributions.any?
     %fieldset.space-y-3
-      %legend.text-xl.font-semibold.text-gray-900.mb-3 Distribution Center Access
-      - @distribution_centers.each_with_index do |dc, i|
+      %legend.text-xl.font-semibold.text-gray-900.mb-3 Distribution Access
+      - @distributions.each_with_index do |dist, i|
         .flex.items-center.gap-4.py-3.border-b.border-gray-200
-          %input{type: "hidden", name: "distribution_center_assignments[#{i}][distribution_center_id]", value: dc.id}
-          %input{type: "checkbox", name: "distribution_center_assignments[#{i}][enabled]", id: "dc_#{dc.id}", class: "w-6 h-6 border-2 border-gray-400"}
-          %label{for: "dc_#{dc.id}", class: "text-xl text-gray-900 flex-1"}= dc.name
-          %select{name: "distribution_center_assignments[#{i}][role]", class: "px-3 py-2 text-lg border-2 border-gray-400 bg-white"}
+          %input{type: "hidden", name: "distribution_assignments[#{i}][distribution_id]", value: dist.id}
+          %input{type: "checkbox", name: "distribution_assignments[#{i}][enabled]", id: "dist_#{dist.id}", class: "w-6 h-6 border-2 border-gray-400"}
+          %label{for: "dist_#{dist.id}", class: "text-xl text-gray-900 flex-1"}= dist.name
+          %select{name: "distribution_assignments[#{i}][role]", class: "px-3 py-2 text-lg border-2 border-gray-400 bg-white"}
             %option{value: "volunteer"} Volunteer
             %option{value: "admin"} Admin
 

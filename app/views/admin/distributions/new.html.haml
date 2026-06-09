@@ -1,19 +1,19 @@
-- content_for :title, "Add Distribution Center"
-%h1.text-3xl.font-bold.text-gray-900.mb-8 Add Distribution Center
+- content_for :title, "Add Distribution"
+%h1.text-3xl.font-bold.text-gray-900.mb-8 Add Distribution
 
-= form_with model: [:admin, @distribution_center], class: "space-y-6 max-w-lg" do |f|
+= form_with model: [:admin, @distribution], class: "space-y-6 max-w-lg" do |f|
   .space-y-2
     = f.label :name, "Name", class: "block text-xl font-medium text-gray-900"
     = f.text_field :name, autofocus: true,
         class: "w-full px-4 py-3 text-xl border-2 border-gray-400 focus:border-gray-900 focus:outline-none"
-    - @distribution_center.errors[:name].each do |msg|
+    - @distribution.errors[:name].each do |msg|
       %p.text-lg.text-red-700= msg
   .space-y-2
     = f.label :address, "Address", class: "block text-xl font-medium text-gray-900"
     = f.text_field :address,
         class: "w-full px-4 py-3 text-xl border-2 border-gray-400 focus:border-gray-900 focus:outline-none"
-    - @distribution_center.errors[:address].each do |msg|
+    - @distribution.errors[:address].each do |msg|
       %p.text-lg.text-red-700= msg
   .flex.gap-4
     = f.submit "Add", class: "px-6 py-3 text-lg font-bold text-white bg-gray-900 hover:bg-gray-700 cursor-pointer transition-colors"
-    = link_to "Cancel", admin_distribution_centers_path, class: "px-6 py-3 text-lg font-medium text-gray-900 underline"
+    = link_to "Cancel", admin_distributions_path, class: "px-6 py-3 text-lg font-medium text-gray-900 underline"

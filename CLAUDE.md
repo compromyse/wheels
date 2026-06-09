@@ -26,7 +26,7 @@ bin/dev
 
 ```bash
 rails db:migrate          # run pending migrations
-rails db:seed             # seed superadmin + sample factory + distribution center
+rails db:seed             # seed superadmin + sample production + distribution
 rails db:migrate:status   # check migration state
 rails routes              # list all routes
 rails runner '<ruby>'     # run arbitrary Ruby in app context
@@ -53,14 +53,14 @@ A user's access is determined entirely by their location assignments, not a sing
 
 ```
 User
- ├── has_many :user_factories         (join: user_id, factory_id, role)
- ├── has_many :factories, through: :user_factories
- ├── has_many :user_distribution_centers  (join: user_id, distribution_center_id, role)
- ├── has_many :distribution_centers, through: :user_distribution_centers
+ ├── has_many :user_productions         (join: user_id, production_id, role)
+ ├── has_many :productions, through: :user_productions
+ ├── has_many :user_distributions  (join: user_id, distribution_id, role)
+ ├── has_many :distributions, through: :user_distributions
  └── superadmin: boolean              (controls admin panel access only)
 ```
 
-`role` on each join record is `"admin"` or `"volunteer"` and is scoped to that specific location. One user can be `admin` at one factory and `volunteer` at a distribution center simultaneously.
+`role` on each join record is `"admin"` or `"volunteer"` and is scoped to that specific location. One user can be `admin` at one production and `volunteer` at a distribution simultaneously.
 
 `superadmin: true` is the only way to access `/admin`. It is independent of location assignments.
 
@@ -70,8 +70,8 @@ User
 |---|---|
 | `require_authentication` | user is logged in |
 | `require_superadmin` | `current_user.superadmin?` |
-| `require_factory_access(factory)` | user has this factory assigned |
-| `require_distribution_center_access(dc)` | user has this dc assigned |
+| `require_production_access(production)` | user has this production assigned |
+| `require_distribution_access(distribution)` | user has this distribution assigned |
 
 All return `403 Access denied` on failure (plain text for now).
 
@@ -80,14 +80,14 @@ All return `403 Access denied` on failure (plain text for now).
 `HomeController#index` is the root. Its logic:
 
 1. Superadmin with **no** location assignments → redirect to `/admin`
-2. Exactly **one** location total (factory or DC) → redirect directly to that dashboard (no picker)
-3. Otherwise → render the home page showing up to three boxes: Factories, Distribution Centers, Admin Panel (if superadmin)
+2. Exactly **one** location total (production or distribution) → redirect directly to that dashboard (no picker)
+3. Otherwise → render the home page showing up to three boxes: Productions, Distributions, Admin Panel (if superadmin)
 
 ### Admin namespace
 
-All admin controllers inherit from `Admin::BaseController < ApplicationController`, which applies `require_superadmin`. The admin panel manages `Factory`, `DistributionCenter`, and `User` records (index/new/create/destroy only — no edit).
+All admin controllers inherit from `Admin::BaseController < ApplicationController`, which applies `require_superadmin`. The admin panel manages `Production`, `Distribution`, and `User` records (index/new/create/destroy only — no edit).
 
-When creating a user in the admin panel, location assignments are submitted as indexed param arrays (`factory_assignments[i][factory_id]`, `[enabled]`, `[role]`). The controller skips rows where `enabled != "1"`.
+When creating a user in the admin panel, location assignments are submitted as indexed param arrays (`production_assignments[i][production_id]`, `[enabled]`, `[role]`). The controller skips rows where `enabled != "1"`.
 
 ### Views
 
@@ -99,7 +99,7 @@ Design constraint: the UI targets users aged 25–70 including people uncomforta
 
 Currently two location types exist:
 
-- **Factory** — one factory currently (`Main Factory`), but the model supports multiple
-- **DistributionCenter** — multiple supported from the start
+- **Production** — one production currently (`Main Production`), but the model supports multiple
+- **Distribution** — multiple supported from the start
 
-Each type has its own dashboard controller (`FactoriesController#show`, `DistributionCentersController#show`) and its own join table. Adding a new location type requires a new model, join table migration, join model, controller, route, and home-page box.
+Each type has its own dashboard controller (`ProductionsController#show`, `DistributionsController#show`) and its own join table. Adding a new location type requires a new model, join table migration, join model, controller, route, and home-page box.

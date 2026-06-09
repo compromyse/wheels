@@ -1,6 +1,6 @@
-class UserFactory < ApplicationRecord
+class UserProduction < ApplicationRecord
   belongs_to :user
-  belongs_to :factory
+  belongs_to :production
 
   validates :role, inclusion: { in: %w[admin volunteer] }
 end

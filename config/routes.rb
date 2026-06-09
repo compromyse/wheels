@@ -9,14 +9,14 @@ Rails.application.routes.draw do
 
   namespace :admin do
     root to: "dashboard#index"
-    resources :factories,            only: [ :index, :new, :create, :destroy ]
-    resources :distribution_centers, only: [ :index, :new, :create, :edit, :update, :destroy ]
-    resources :users,                only: [ :index, :new, :create, :destroy ]
+    resources :productions,   only: [ :index, :new, :create, :destroy ]
+    resources :distributions, only: [ :index, :new, :create, :edit, :update, :destroy ]
+    resources :users,         only: [ :index, :new, :create, :destroy ]
   end
 
-  resources :bike_requests,        only: [ :update ]
-  resources :factories,            only: [ :show ]
-  resources :distribution_centers, only: [ :show ] do
+  resources :bike_requests,  only: [ :update ]
+  resources :productions,    only: [ :show ]
+  resources :distributions,  only: [ :show ] do
     resources :bike_requests, only: [ :new, :create ]
   end
 end

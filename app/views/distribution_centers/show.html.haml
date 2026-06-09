@@ -1,7 +1,0 @@
-- content_for :title, @distribution_center.name
-.flex.items-center.justify-between.mb-8
-  %h1.text-3xl.font-bold.text-gray-900= @distribution_center.name
-  = link_to "Request Bikes", new_distribution_center_bike_request_path(@distribution_center),
-      class: "px-6 py-3 text-lg font-bold text-white bg-gray-900 hover:bg-gray-700 transition-colors"
-
-= render "bike_requests/list", active_tab: @tab, bike_requests: @bike_requests, pagy: @pagy, factory_view: false

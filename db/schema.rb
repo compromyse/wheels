@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_09_223755) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_09_230002) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -19,57 +19,57 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_09_223755) do
     t.bigint "assignee_id"
     t.integer "bike_type", null: false
     t.datetime "created_at", null: false
-    t.bigint "distribution_center_id", null: false
+    t.bigint "distribution_id", null: false
     t.date "due_date", null: false
-    t.bigint "factory_id", null: false
     t.string "height"
     t.text "notes"
     t.string "phone", null: false
+    t.bigint "production_id", null: false
     t.string "recipient_name"
     t.string "requestor_name", null: false
     t.integer "status", default: 0, null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.index ["assignee_id"], name: "index_bike_requests_on_assignee_id"
-    t.index ["distribution_center_id"], name: "index_bike_requests_on_distribution_center_id"
-    t.index ["factory_id"], name: "index_bike_requests_on_factory_id"
+    t.index ["distribution_id"], name: "index_bike_requests_on_distribution_id"
+    t.index ["production_id"], name: "index_bike_requests_on_production_id"
     t.index ["status"], name: "index_bike_requests_on_status"
     t.index ["user_id"], name: "index_bike_requests_on_user_id"
   end
 
-  create_table "distribution_centers", force: :cascade do |t|
+  create_table "distributions", force: :cascade do |t|
     t.string "address"
     t.datetime "created_at", null: false
     t.string "name", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "factories", force: :cascade do |t|
+  create_table "productions", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "name", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "user_distribution_centers", force: :cascade do |t|
+  create_table "user_distributions", force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.bigint "distribution_center_id", null: false
+    t.bigint "distribution_id", null: false
     t.string "role", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
-    t.index ["distribution_center_id"], name: "index_user_distribution_centers_on_distribution_center_id"
-    t.index ["user_id", "distribution_center_id"], name: "idx_on_user_id_distribution_center_id_d0ce0dc134", unique: true
-    t.index ["user_id"], name: "index_user_distribution_centers_on_user_id"
+    t.index ["distribution_id"], name: "index_user_distributions_on_distribution_id"
+    t.index ["user_id", "distribution_id"], name: "index_user_distributions_on_user_id_and_distribution_id", unique: true
+    t.index ["user_id"], name: "index_user_distributions_on_user_id"
   end
 
-  create_table "user_factories", force: :cascade do |t|
+  create_table "user_productions", force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.bigint "factory_id", null: false
+    t.bigint "production_id", null: false
     t.string "role", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
-    t.index ["factory_id"], name: "index_user_factories_on_factory_id"
-    t.index ["user_id", "factory_id"], name: "index_user_factories_on_user_id_and_factory_id", unique: true
-    t.index ["user_id"], name: "index_user_factories_on_user_id"
+    t.index ["production_id"], name: "index_user_productions_on_production_id"
+    t.index ["user_id", "production_id"], name: "index_user_productions_on_user_id_and_production_id", unique: true
+    t.index ["user_id"], name: "index_user_productions_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -82,12 +82,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_09_223755) do
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 
-  add_foreign_key "bike_requests", "distribution_centers"
-  add_foreign_key "bike_requests", "factories"
+  add_foreign_key "bike_requests", "distributions"
+  add_foreign_key "bike_requests", "productions"
   add_foreign_key "bike_requests", "users"
   add_foreign_key "bike_requests", "users", column: "assignee_id"
-  add_foreign_key "user_distribution_centers", "distribution_centers"
-  add_foreign_key "user_distribution_centers", "users"
-  add_foreign_key "user_factories", "factories"
-  add_foreign_key "user_factories", "users"
+  add_foreign_key "user_distributions", "distributions"
+  add_foreign_key "user_distributions", "users"
+  add_foreign_key "user_productions", "productions"
+  add_foreign_key "user_productions", "users"
 end
