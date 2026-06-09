@@ -2,6 +2,26 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## What Wheels does
+
+Wheels manages the process of requesting and distributing bikes. Distribution centers submit requests for individual people; the production center fulfills them.
+
+Users are assigned to one or more locations (productions or distributions) with a role per location: **admin** or **volunteer**. If a user has only one location assigned, they go directly to that dashboard on login. Multiple locations show a picker. Superadmins with no location assignments go directly to the admin panel.
+
+Target audience: ages 25–70, including people uncomfortable with computers. The UI must be simple and intuitive — minimal elements, large tap targets, plain language.
+
+### Bike requests
+
+Each bike request is for **one person**. A distribution center submits it on behalf of that person. The production center (currently only one, hardcoded to `Production.first`) fulfills it.
+
+Status flow: **requested → pending → completed → delivered → distributed**. Back-transitions are allowed at each step. Marking pending sets the claiming production worker as the assignee.
+
+Each card will eventually have a print button (not yet implemented — keep the card layout print-friendly).
+
+### Future considerations
+
+- Multiple productions may be added; the hardcoded `Production.first` will need to become selectable.
+
 ## Quick reference
 
 - Dev environment & commands: `docs/dev-environment.md`
