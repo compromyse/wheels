@@ -3,6 +3,11 @@ class DistributionCentersController < ApplicationController
   before_action :check_access
 
   def show
+    @tab = params[:tab].presence_in(%w[requested pending completed]) || "requested"
+    scope = @distribution_center.bike_requests.where(status: @tab)
+                                .includes(:user, :assignee)
+                                .order(due_date: :asc)
+    @pagy, @bike_requests = pagy(scope, limit: 20)
   end
 
   private

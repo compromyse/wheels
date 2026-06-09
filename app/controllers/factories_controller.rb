@@ -4,9 +4,10 @@ class FactoriesController < ApplicationController
 
   def show
     @tab = params[:tab].presence_in(%w[requested pending completed]) || "requested"
-    @bike_requests = @factory.bike_requests.where(status: @tab)
-                             .includes(:distribution_center, :user, :assignee)
-                             .order(due_date: :asc)
+    scope = @factory.bike_requests.where(status: @tab)
+                    .includes(:distribution_center, :user, :assignee)
+                    .order(due_date: :asc)
+    @pagy, @bike_requests = pagy(scope, limit: 20)
   end
 
   private

@@ -58,6 +58,8 @@ group :development do
   gem "web-console"
 end
 
+gem "pagy", "~> 9.0"
+
 gem "haml-rails", "~> 3.0"
 
 gem "html2haml", "~> 2.3"
