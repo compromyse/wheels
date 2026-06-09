@@ -32,4 +32,14 @@ bundle exec rubocop
 bundle exec bundler-audit
 ```
 
-No tests yet. Test database is `wheels` (separate from dev by Rails env).
+Test database is `wheels_test`. Run with `PGDATA=$(pwd)/pgdata rails test`.
+
+## First-time setup
+
+After cloning, run:
+
+```bash
+./setup.sh
+```
+
+This initialises PostgreSQL, installs gems, configures git hooks, runs migrations, and seeds the database.
