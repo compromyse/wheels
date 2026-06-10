@@ -22,12 +22,14 @@ class ApplicationController < ActionController::Base
   end
 
   def require_production_access(production)
+    return if current_user&.superadmin?
     unless current_user&.productions&.include?(production)
       render plain: "Access denied", status: :forbidden
     end
   end
 
   def require_distribution_access(distribution)
+    return if current_user&.superadmin?
     unless current_user&.distributions&.include?(distribution)
       render plain: "Access denied", status: :forbidden
     end

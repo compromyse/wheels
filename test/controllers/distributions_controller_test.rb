@@ -6,6 +6,12 @@ class DistributionsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to login_path
   end
 
+  test "show allows superadmin without explicit distribution assignment" do
+    post login_path, params: { email: users(:superadmin).email, password: "password" }
+    get distribution_path(distributions(:downtown_dist))
+    assert_response :success
+  end
+
   test "show returns 403 for user without distribution access" do
     post login_path, params: { email: users(:prod_admin).email, password: "password" }
     get distribution_path(distributions(:downtown_dist))

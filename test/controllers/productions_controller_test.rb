@@ -6,6 +6,12 @@ class ProductionsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to login_path
   end
 
+  test "show allows superadmin without explicit production assignment" do
+    post login_path, params: { email: users(:superadmin).email, password: "password" }
+    get production_path(productions(:main_production))
+    assert_response :success
+  end
+
   test "show returns 403 for user without production access" do
     post login_path, params: { email: users(:dist_user).email, password: "password" }
     get production_path(productions(:main_production))
