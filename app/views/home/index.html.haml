@@ -2,7 +2,7 @@
 %h1.text-3xl.font-bold.text-gray-900.mb-8 Welcome, #{current_user.name}
 
 - if @productions.empty? && @distributions.empty? && !current_user.superadmin?
-  %p.text-xl.text-gray-600 Your account is pending — an administrator needs to assign you to a location before you can get started.
+  %p.text-xl.text-gray-600 You have no location assignments yet. Contact an administrator to get access.
 - else
   .space-y-10
     - if @productions.any?
