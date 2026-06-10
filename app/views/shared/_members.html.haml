@@ -1,4 +1,4 @@
-%section.mt-12.border-t-2.border-gray-900.pt-8
+%section
   %h2.text-2xl.font-bold.text-gray-900.mb-6 Members
 
   = form_with url: location_path, method: :get, class: "flex gap-3 mb-6" do |f|
@@ -35,8 +35,12 @@
           .flex.items-center.gap-3
             = form_with url: member_update_path.call(membership), method: :patch, class: "flex items-center gap-2" do |f|
               = f.select :role, roles.map { |r| [r.capitalize, r] }, { selected: membership.role },
-                  class: "px-3 py-2 text-lg border-2 border-gray-400 bg-white"
-              = f.submit "Save", class: "px-3 py-2 text-lg font-medium text-gray-900 underline bg-transparent border-0 cursor-pointer"
+                  class: "px-3 py-2 text-lg border-2 border-gray-400 bg-white",
+                  onchange: "this.form.requestSubmit(); this.nextElementSibling.classList.remove('hidden')"
+              %span.hidden.text-gray-400{"aria-hidden": "true"}
+                %svg{xmlns: "http://www.w3.org/2000/svg", width: "18", height: "18", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", "stroke-width": "2", class: "animate-spin"}
+                  %circle{cx: "12", cy: "12", r: "10", "stroke-opacity": "0.25"}
+                  %path{d: "M12 2a10 10 0 0 1 10 10"}
             = button_to "Remove", member_destroy_path.call(membership), method: :delete,
                 data: { turbo_confirm: "Remove #{membership.user.name}?" },
                 class: "px-4 py-2 text-lg font-medium text-red-700 underline bg-transparent border-0 cursor-pointer"
