@@ -5,5 +5,6 @@
     member_update_path: ->(m) { production_user_production_path(@production, m) },
     member_destroy_path: ->(m) { production_user_production_path(@production, m) },
     members: @members,
+    pagy_members: @pagy_members,
     search_results: @member_search_results,
     roles: UserProduction::ROLES

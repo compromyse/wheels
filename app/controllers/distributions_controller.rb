@@ -17,7 +17,8 @@ class DistributionsController < ApplicationController
 
   def users
     render plain: "Access denied", status: :forbidden and return unless @location_admin
-    @members = @distribution.user_distributions.includes(:user).order("users.name")
+    members_scope = @distribution.user_distributions.includes(:user).order("users.name")
+    @pagy_members, @members = pagy(members_scope, limit: 20)
     if params[:member_query].present?
       query = "%#{params[:member_query]}%"
       @member_search_results = User.where("name ILIKE ? OR email ILIKE ?", query, query)

@@ -5,5 +5,6 @@
     member_update_path: ->(m) { distribution_user_distribution_path(@distribution, m) },
     member_destroy_path: ->(m) { distribution_user_distribution_path(@distribution, m) },
     members: @members,
+    pagy_members: @pagy_members,
     search_results: @member_search_results,
     roles: UserDistribution::ROLES
