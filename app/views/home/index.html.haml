@@ -1,28 +1,31 @@
 - content_for :title, "Home"
 %h1.text-3xl.font-bold.text-gray-900.mb-8 Welcome, #{current_user.name}
 
-.space-y-10
-  - if @productions.any?
-    %section
-      %h2.text-sm.font-semibold.text-gray-500.uppercase.tracking-widest.mb-3 Productions
-      .space-y-2
-        - @productions.each do |production|
-          = link_to production_path(production), class: "flex items-center justify-between px-6 py-5 border-2 border-gray-900 hover:bg-gray-100 transition-colors" do
-            %span.text-2xl.font-bold.text-gray-900= production.name
-            %span.text-gray-500 →
+- if @productions.empty? && @distributions.empty? && !current_user.superadmin?
+  %p.text-xl.text-gray-600 Your account is pending — an administrator needs to assign you to a location before you can get started.
+- else
+  .space-y-10
+    - if @productions.any?
+      %section
+        %h2.text-sm.font-semibold.text-gray-500.uppercase.tracking-widest.mb-3 Productions
+        .space-y-2
+          - @productions.each do |production|
+            = link_to production_path(production), class: "flex items-center justify-between px-6 py-5 border-2 border-gray-900 hover:bg-gray-100 transition-colors" do
+              %span.text-2xl.font-bold.text-gray-900= production.name
+              %span.text-gray-500 →
 
-  - if @distributions.any?
-    %section
-      %h2.text-sm.font-semibold.text-gray-500.uppercase.tracking-widest.mb-3 Distributions
-      .space-y-2
-        - @distributions.each do |dist|
-          = link_to distribution_path(dist), class: "flex items-center justify-between px-6 py-5 border-2 border-gray-900 hover:bg-gray-100 transition-colors" do
-            %span.text-2xl.font-bold.text-gray-900= dist.name
-            %span.text-gray-500 →
+    - if @distributions.any?
+      %section
+        %h2.text-sm.font-semibold.text-gray-500.uppercase.tracking-widest.mb-3 Distributions
+        .space-y-2
+          - @distributions.each do |dist|
+            = link_to distribution_path(dist), class: "flex items-center justify-between px-6 py-5 border-2 border-gray-900 hover:bg-gray-100 transition-colors" do
+              %span.text-2xl.font-bold.text-gray-900= dist.name
+              %span.text-gray-500 →
 
-  - if current_user.superadmin?
-    %section
-      %h2.text-sm.font-semibold.text-gray-500.uppercase.tracking-widest.mb-3 Administration
-      = link_to admin_root_path, class: "flex items-center justify-between px-6 py-5 border-2 border-gray-900 hover:bg-gray-100 transition-colors" do
-        %span.text-2xl.font-bold.text-gray-900 Admin Panel
-        %span.text-gray-500 →
+    - if current_user.superadmin?
+      %section
+        %h2.text-sm.font-semibold.text-gray-500.uppercase.tracking-widest.mb-3 Administration
+        = link_to admin_root_path, class: "flex items-center justify-between px-6 py-5 border-2 border-gray-900 hover:bg-gray-100 transition-colors" do
+          %span.text-2xl.font-bold.text-gray-900 Admin Panel
+          %span.text-gray-500 →

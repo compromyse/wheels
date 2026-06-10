@@ -2,7 +2,7 @@ class Admin::UsersController < Admin::BaseController
   before_action :set_user, only: [ :edit, :update, :destroy ]
 
   def index
-    @users = User.includes(:productions, :distributions).all
+    @pagy, @users = pagy(User.includes(:productions, :distributions).order(:name), limit: 20)
   end
 
   def new

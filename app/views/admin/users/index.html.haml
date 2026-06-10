@@ -24,3 +24,15 @@
                 class: "px-4 py-2 text-lg font-medium text-red-700 underline bg-transparent border-0 cursor-pointer shrink-0"
 - else
   %p.text-xl.text-gray-500 No users yet.
+
+- if @pagy.pages > 1
+  .flex.items-center.gap-6.mt-8.text-lg
+    - if @pagy.prev
+      = link_to "← Previous", admin_users_path(page: @pagy.prev), class: "font-medium text-gray-900 underline"
+    - else
+      %span.text-gray-400 ← Previous
+    %span.text-gray-600= "Page #{@pagy.page} of #{@pagy.pages}"
+    - if @pagy.next
+      = link_to "Next →", admin_users_path(page: @pagy.next), class: "font-medium text-gray-900 underline"
+    - else
+      %span.text-gray-400 Next →

@@ -33,6 +33,13 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "user with no location assignments sees pending message" do
+    post login_path, params: { email: users(:no_location_user).email, password: "password" }
+    get root_path
+    assert_response :success
+    assert_match "pending", response.body
+  end
+
   test "superadmin with a location assignment renders home page (not admin redirect)" do
     user = users(:superadmin_with_location)
     post login_path, params: { email: user.email, password: "password" }
