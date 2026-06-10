@@ -50,10 +50,10 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "POST /login superadmin with no locations redirects to admin panel" do
+  test "POST /login superadmin lands on home page" do
     post login_path, params: { email: users(:superadmin).email, password: "password" }
     follow_redirect!
-    assert_redirected_to admin_root_path
+    assert_response :success
   end
 
   test "DELETE /logout clears session and redirects to login" do

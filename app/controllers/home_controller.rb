@@ -1,10 +1,6 @@
 class HomeController < ApplicationController
   def index
-    if current_user.superadmin? && current_user.all_locations.empty?
-      redirect_to admin_root_path and return
-    end
-
-    if current_user.single_location?
+    if !current_user.superadmin? && current_user.single_location?
       location = current_user.all_locations.first
       case location
       when Production

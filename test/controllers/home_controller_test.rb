@@ -6,10 +6,11 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to login_path
   end
 
-  test "superadmin with no location assignments redirects to /admin" do
+  test "superadmin with no location assignments sees home page with admin panel link" do
     post login_path, params: { email: users(:superadmin).email, password: "password" }
     get root_path
-    assert_redirected_to admin_root_path
+    assert_response :success
+    assert_match admin_root_path, response.body
   end
 
   test "single-location production user redirects to production dashboard" do
@@ -40,11 +41,11 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     assert_match "no location assignments", response.body
   end
 
-  test "superadmin with a location assignment renders home page (not admin redirect)" do
+  test "superadmin with a location assignment renders home page with both location and admin panel link" do
     user = users(:superadmin_with_location)
     post login_path, params: { email: user.email, password: "password" }
     get root_path
-    # Has exactly one production location — redirects to that production
-    assert_redirected_to production_path(productions(:main_production))
+    assert_response :success
+    assert_match admin_root_path, response.body
   end
 end
