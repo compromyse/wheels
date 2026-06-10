@@ -34,7 +34,7 @@ class UserProductionsControllerTest < ActionDispatch::IntegrationTest
       post production_user_productions_path(productions(:main_production)),
         params: { user_id: users(:no_location_user).id, role: "volunteer" }
     end
-    assert_redirected_to production_path(productions(:main_production))
+    assert_redirected_to users_production_path(productions(:main_production))
   end
 
   test "create adds user to production for superadmin" do
@@ -43,14 +43,14 @@ class UserProductionsControllerTest < ActionDispatch::IntegrationTest
       post production_user_productions_path(productions(:main_production)),
         params: { user_id: users(:no_location_user).id, role: "admin" }
     end
-    assert_redirected_to production_path(productions(:main_production))
+    assert_redirected_to users_production_path(productions(:main_production))
   end
 
   test "create redirects with alert for unknown user" do
     login_as_prod_admin
     post production_user_productions_path(productions(:main_production)),
       params: { user_id: 999999, role: "volunteer" }
-    assert_redirected_to production_path(productions(:main_production))
+    assert_redirected_to users_production_path(productions(:main_production))
     assert_equal "User not found.", flash[:alert]
   end
 
@@ -58,7 +58,7 @@ class UserProductionsControllerTest < ActionDispatch::IntegrationTest
     login_as_prod_admin
     post production_user_productions_path(productions(:main_production)),
       params: { user_id: users(:prod_admin).id, role: "volunteer" }
-    assert_redirected_to production_path(productions(:main_production))
+    assert_redirected_to users_production_path(productions(:main_production))
     assert flash[:alert].present?
   end
 
@@ -75,7 +75,7 @@ class UserProductionsControllerTest < ActionDispatch::IntegrationTest
     login_as_prod_admin
     up = UserProduction.create!(user: users(:no_location_user), production: productions(:main_production), role: "volunteer")
     patch production_user_production_path(productions(:main_production), up), params: { role: "admin" }
-    assert_redirected_to production_path(productions(:main_production))
+    assert_redirected_to users_production_path(productions(:main_production))
     assert_equal "admin", up.reload.role
   end
 
@@ -83,7 +83,7 @@ class UserProductionsControllerTest < ActionDispatch::IntegrationTest
     login_as_prod_admin
     up = UserProduction.create!(user: users(:no_location_user), production: productions(:main_production), role: "volunteer")
     patch production_user_production_path(productions(:main_production), up), params: { role: "superuser" }
-    assert_redirected_to production_path(productions(:main_production))
+    assert_redirected_to users_production_path(productions(:main_production))
     assert_equal flash[:alert], "Invalid role."
   end
 
@@ -102,6 +102,6 @@ class UserProductionsControllerTest < ActionDispatch::IntegrationTest
     assert_difference "UserProduction.count", -1 do
       delete production_user_production_path(productions(:main_production), up)
     end
-    assert_redirected_to production_path(productions(:main_production))
+    assert_redirected_to users_production_path(productions(:main_production))
   end
 end

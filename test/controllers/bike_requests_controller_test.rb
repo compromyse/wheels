@@ -41,7 +41,7 @@ class BikeRequestsControllerTest < ActionDispatch::IntegrationTest
       post distribution_bike_requests_path(distributions(:downtown_dist)),
            params: { bike_request: valid_bike_request_params }
     end
-    assert_redirected_to distribution_path(distributions(:downtown_dist))
+    assert_redirected_to tickets_distribution_path(distributions(:downtown_dist))
   end
 
   test "create assigns current user as submitter" do
@@ -128,7 +128,7 @@ class BikeRequestsControllerTest < ActionDispatch::IntegrationTest
     br = bike_requests(:requested_bike)
     post login_path, params: { email: users(:prod_volunteer).email, password: "password" }
     patch bike_request_path(br), params: { status: "pending" }
-    assert_redirected_to production_path(productions(:main_production), tab: "pending")
+    assert_redirected_to tickets_production_path(productions(:main_production), tab: "pending")
   end
 
   private
@@ -137,7 +137,7 @@ class BikeRequestsControllerTest < ActionDispatch::IntegrationTest
     # prod_admin already has pending_bike assigned in fixtures
     post login_path, params: { email: users(:prod_admin).email, password: "password" }
     patch bike_request_path(bike_requests(:requested_bike)), params: { status: "pending" }
-    assert_redirected_to production_path(productions(:main_production), tab: "requested")
+    assert_redirected_to tickets_production_path(productions(:main_production), tab: "requested")
     assert_match "already has a pending request", flash[:alert]
     assert bike_requests(:requested_bike).reload.requested?
   end
@@ -150,7 +150,7 @@ class BikeRequestsControllerTest < ActionDispatch::IntegrationTest
 
   def valid_bike_request_params
     {
-      phone: "555-555-0001",
+      phone: "5555550001",
       requestor_name: "New Person",
       due_date: (Date.today + 14).to_s,
       bike_type: "male"
