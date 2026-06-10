@@ -73,9 +73,8 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     assert_difference "UserProduction.count", 1 do
       post admin_users_path, params: {
         user: params,
-        production_assignments: [
-          { production_id: prod.id, enabled: "1", role: "volunteer" }
-        ]
+        production_access_enabled: { prod.id => "1" },
+        production_access_role: { prod.id => "volunteer" }
       }
     end
     user = User.find_by(email: params[:email])
@@ -85,14 +84,8 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
 
   test "create skips production assignment when not enabled" do
     login_as_superadmin
-    prod = productions(:main_production)
     assert_no_difference "UserProduction.count" do
-      post admin_users_path, params: {
-        user: new_user_params,
-        production_assignments: [
-          { production_id: prod.id, enabled: "0", role: "volunteer" }
-        ]
-      }
+      post admin_users_path, params: { user: new_user_params }
     end
   end
 
@@ -103,9 +96,8 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     assert_difference "UserDistribution.count", 1 do
       post admin_users_path, params: {
         user: params,
-        distribution_assignments: [
-          { distribution_id: dist.id, enabled: "1", role: "admin" }
-        ]
+        distribution_access_enabled: { dist.id => "1" },
+        distribution_access_role: { dist.id => "admin" }
       }
     end
     user = User.find_by(email: params[:email])
@@ -167,9 +159,8 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     assert_difference "UserDistribution.count", 1 do
       patch admin_user_path(user), params: {
         user: { name: user.name, email: user.email },
-        distribution_assignments: [
-          { distribution_id: dist.id, enabled: "1", role: "volunteer" }
-        ]
+        distribution_access_enabled: { dist.id => "1" },
+        distribution_access_role: { dist.id => "volunteer" }
       }
     end
     assert_includes user.reload.distributions, dist

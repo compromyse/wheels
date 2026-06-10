@@ -32,28 +32,30 @@
   - if productions.any?
     %fieldset.space-y-3
       %legend.text-xl.font-semibold.text-gray-900.mb-3 Production Access
-      - productions.each_with_index do |production, i|
+      - productions.each do |production|
         - assigned = user_productions_map[production.id]
         .flex.items-center.gap-4.py-3.border-b.border-gray-200
-          %input{type: "hidden", name: "production_assignments[#{i}][production_id]", value: production.id}
-          %input{type: "checkbox", name: "production_assignments[#{i}][enabled]", id: "production_#{production.id}",
-              value: "1", checked: assigned.present?, class: "w-6 h-6 border-2 border-gray-400"}
+          %input{type: "checkbox", name: "production_access_enabled[#{production.id}]",
+              id: "production_#{production.id}", value: "1", checked: assigned.present?,
+              class: "w-6 h-6 border-2 border-gray-400"}
           %label{for: "production_#{production.id}", class: "text-xl text-gray-900 flex-1"}= production.name
-          %select{name: "production_assignments[#{i}][role]", class: "px-3 py-2 text-lg border-2 border-gray-400 bg-white"}
+          %select{name: "production_access_role[#{production.id}]",
+              class: "px-3 py-2 text-lg border-2 border-gray-400 bg-white"}
             %option{value: "volunteer", selected: assigned&.dig(:role) != "admin"} Volunteer
             %option{value: "admin", selected: assigned&.dig(:role) == "admin"} Admin
 
   - if distributions.any?
     %fieldset.space-y-3
       %legend.text-xl.font-semibold.text-gray-900.mb-3 Distribution Access
-      - distributions.each_with_index do |dist, i|
+      - distributions.each do |dist|
         - assigned = user_distributions_map[dist.id]
         .flex.items-center.gap-4.py-3.border-b.border-gray-200
-          %input{type: "hidden", name: "distribution_assignments[#{i}][distribution_id]", value: dist.id}
-          %input{type: "checkbox", name: "distribution_assignments[#{i}][enabled]", id: "dist_#{dist.id}",
-              value: "1", checked: assigned.present?, class: "w-6 h-6 border-2 border-gray-400"}
+          %input{type: "checkbox", name: "distribution_access_enabled[#{dist.id}]",
+              id: "dist_#{dist.id}", value: "1", checked: assigned.present?,
+              class: "w-6 h-6 border-2 border-gray-400"}
           %label{for: "dist_#{dist.id}", class: "text-xl text-gray-900 flex-1"}= dist.name
-          %select{name: "distribution_assignments[#{i}][role]", class: "px-3 py-2 text-lg border-2 border-gray-400 bg-white"}
+          %select{name: "distribution_access_role[#{dist.id}]",
+              class: "px-3 py-2 text-lg border-2 border-gray-400 bg-white"}
             %option{value: "volunteer", selected: assigned&.dig(:role) != "admin"} Volunteer
             %option{value: "admin", selected: assigned&.dig(:role) == "admin"} Admin
 

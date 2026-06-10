@@ -64,20 +64,14 @@ class Admin::UsersController < Admin::BaseController
     @user.user_productions.destroy_all
     @user.user_distributions.destroy_all
 
-    Array(params[:production_assignments]).each do |assignment|
-      next unless assignment[:enabled] == "1" && assignment[:production_id].present?
-      @user.user_productions.create!(
-        production_id: assignment[:production_id],
-        role: assignment[:role]
-      )
+    (params[:production_access_enabled] || {}).each_key do |production_id|
+      role = params.dig(:production_access_role, production_id) || "volunteer"
+      @user.user_productions.create!(production_id: production_id, role: role)
     end
 
-    Array(params[:distribution_assignments]).each do |assignment|
-      next unless assignment[:enabled] == "1" && assignment[:distribution_id].present?
-      @user.user_distributions.create!(
-        distribution_id: assignment[:distribution_id],
-        role: assignment[:role]
-      )
+    (params[:distribution_access_enabled] || {}).each_key do |distribution_id|
+      role = params.dig(:distribution_access_role, distribution_id) || "volunteer"
+      @user.user_distributions.create!(distribution_id: distribution_id, role: role)
     end
   end
 end
