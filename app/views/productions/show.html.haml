@@ -1,5 +1,4 @@
 - content_for :title, @production.name
-%h1.text-3xl.font-bold.text-gray-900.mb-8= @production.name
 
 = render "bike_requests/list", active_tab: @tab, bike_requests: @bike_requests, pagy: @pagy, production_view: true
 

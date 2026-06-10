@@ -17,7 +17,7 @@ class BikeRequestsController < ApplicationController
     @bike_request.user = current_user
 
     if @bike_request.save
-      redirect_to distribution_path(@distribution), notice: "Bike request submitted."
+      redirect_to tickets_distribution_path(@distribution), notice: "Bike request submitted."
     else
       render :new, status: :unprocessable_entity
     end
@@ -35,9 +35,9 @@ class BikeRequestsController < ApplicationController
     original_status = @bike_request.status
 
     if attributes && @bike_request.update(attributes)
-      redirect_to production_path(@bike_request.production, tab: @bike_request.status)
+      redirect_to tickets_production_path(@bike_request.production, tab: @bike_request.status)
     else
-      redirect_to production_path(@bike_request.production, tab: original_status),
+      redirect_to tickets_production_path(@bike_request.production, tab: original_status),
         alert: @bike_request.errors.full_messages.first
     end
   end

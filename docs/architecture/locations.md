@@ -7,23 +7,39 @@ Each type has its own dashboard controller, join table, and join model. Adding a
 ## Production
 
 - Model: `Production` — `app/models/production.rb`
-- Join: `UserProduction` (`user_id`, `production_id`, `role`)
-- Controller: `ProductionsController#show`
-- Route: `GET /productions/:id`
+- Join: `UserProduction` (`user_id`, `production_id`, `role`) — roles defined in `UserProduction::ROLES`
+- Controller: `ProductionsController` — actions: `show` (redirects to tickets), `tickets`, `users`
+- Routes:
+  - `GET /productions/:id` — redirects to tickets
+  - `GET /productions/:id/tickets` — bike ticket dashboard
+  - `GET /productions/:id/users` — member management (admin only)
 - Currently one record (`Main Production`)
 
 ## Distribution
 
 - Model: `Distribution` — `app/models/distribution.rb`; has `name` and `address`
-- Join: `UserDistribution` (`user_id`, `distribution_id`, `role`)
-- Controller: `DistributionsController#show`
-- Route: `GET /distributions/:id`
+- Join: `UserDistribution` (`user_id`, `distribution_id`, `role`) — roles defined in `UserDistribution::ROLES`
+- Controller: `DistributionsController` — actions: `show` (redirects to tickets), `tickets`, `users`
+- Routes:
+  - `GET /distributions/:id` — redirects to tickets
+  - `GET /distributions/:id/tickets` — bike ticket dashboard
+  - `GET /distributions/:id/users` — member management (admin only)
+
+## Member Management
+
+Both productions and distributions have a `/users` route for managing members. Only location admins (and superadmins) can access it. Members can be searched by name or email (fuzzy, ILIKE), added with a role, have their role changed, or be removed.
+
+Nested routes:
+- `POST /productions/:id/user_productions` — add member
+- `PATCH /productions/:id/user_productions/:id` — update role
+- `DELETE /productions/:id/user_productions/:id` — remove member
+- Same pattern for distributions with `user_distributions`
 
 ## Bike Requests
 
 Distributions submit bike requests to a production. One request = one person.
 
-Model: `BikeRequest` — fields: `phone`, `requestor_name`, `due_date`, `recipient_name`, `bike_type` (enum: male/female/kid), `age`, `height`, `notes`, `status` (enum), `assignee_id`
+Model: `BikeRequest` — fields: `phone` (10 digits exactly, no formatting), `requestor_name`, `due_date`, `recipient_name`, `bike_type` (enum: male/female/kid), `age`, `height`, `notes`, `status` (enum), `assignee_id`
 
 Status flow: `requested` → `pending` → `completed` → `delivered` → `distributed`
 
@@ -31,5 +47,6 @@ Status flow: `requested` → `pending` → `completed` → `delivered` → `dist
 - Back-transitions are allowed at each step
 
 Routes:
+- `GET /distributions/:distribution_id/bike_requests/new` — new request form (distribution access)
 - `POST /distributions/:distribution_id/bike_requests` — create (distribution access)
 - `PATCH /bike_requests/:id` — update status (production access)

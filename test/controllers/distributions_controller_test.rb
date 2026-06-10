@@ -86,17 +86,59 @@ class DistributionsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "users sets member search results when query is present" do
+  test "users search by full name finds unassigned user" do
     post login_path, params: { email: users(:multi_user).email, password: "password" }
     get users_distribution_path(distributions(:downtown_dist)), params: { member_query: users(:no_location_user).name }
-    assert_response :success
     assert_includes assigns(:member_search_results), users(:no_location_user)
   end
 
-  test "users excludes already-assigned users from search results" do
+  test "users search by partial name finds matching unassigned users" do
+    post login_path, params: { email: users(:multi_user).email, password: "password" }
+    get users_distribution_path(distributions(:downtown_dist)), params: { member_query: "No Location" }
+    assert_includes assigns(:member_search_results), users(:no_location_user)
+  end
+
+  test "users search by email finds unassigned user" do
+    post login_path, params: { email: users(:multi_user).email, password: "password" }
+    get users_distribution_path(distributions(:downtown_dist)), params: { member_query: users(:no_location_user).email }
+    assert_includes assigns(:member_search_results), users(:no_location_user)
+  end
+
+  test "users search by partial email finds unassigned user" do
+    post login_path, params: { email: users(:multi_user).email, password: "password" }
+    get users_distribution_path(distributions(:downtown_dist)), params: { member_query: "no_location" }
+    assert_includes assigns(:member_search_results), users(:no_location_user)
+  end
+
+  test "users search is case-insensitive" do
+    post login_path, params: { email: users(:multi_user).email, password: "password" }
+    get users_distribution_path(distributions(:downtown_dist)), params: { member_query: users(:no_location_user).name.upcase }
+    assert_includes assigns(:member_search_results), users(:no_location_user)
+  end
+
+  test "users includes already-assigned users in search results" do
     post login_path, params: { email: users(:multi_user).email, password: "password" }
     get users_distribution_path(distributions(:downtown_dist)), params: { member_query: users(:dist_user).name }
-    assert_response :success
-    assert_not_includes assigns(:member_search_results), users(:dist_user)
+    assert_includes assigns(:member_search_results), users(:dist_user)
+  end
+
+  test "users search with no match returns empty results" do
+    post login_path, params: { email: users(:multi_user).email, password: "password" }
+    get users_distribution_path(distributions(:downtown_dist)), params: { member_query: "zzznomatch" }
+    assert_empty assigns(:member_search_results)
+  end
+
+  test "users search not run when query is blank" do
+    post login_path, params: { email: users(:multi_user).email, password: "password" }
+    get users_distribution_path(distributions(:downtown_dist)), params: { member_query: "" }
+    assert_nil assigns(:member_search_results)
+  end
+
+  test "users search can return multiple results" do
+    post login_path, params: { email: users(:multi_user).email, password: "password" }
+    # prod_admin and no_location_user both unassigned to downtown_dist; search "admin" matches prod_admin
+    get users_distribution_path(distributions(:downtown_dist)), params: { member_query: "admin" }
+    results = assigns(:member_search_results)
+    assert_includes results, users(:prod_admin)
   end
 end

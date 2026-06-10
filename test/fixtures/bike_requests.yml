@@ -1,5 +1,5 @@
 requested_bike:
-  phone: "555-555-1234"
+  phone: "5555551234"
   requestor_name: Alice Smith
   due_date: <%= 30.days.from_now.to_date %>
   bike_type: 0
@@ -9,7 +9,7 @@ requested_bike:
   user: dist_user
 
 pending_bike:
-  phone: "555-555-5678"
+  phone: "5555555678"
   requestor_name: Bob Jones
   due_date: <%= 20.days.from_now.to_date %>
   bike_type: 1
@@ -20,7 +20,7 @@ pending_bike:
   assignee: prod_admin
 
 completed_bike:
-  phone: "555-555-9999"
+  phone: "5555559999"
   requestor_name: Carol White
   due_date: <%= 10.days.from_now.to_date %>
   bike_type: 2

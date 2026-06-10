@@ -1,0 +1,9 @@
+- content_for :title, @production.name
+= render "shared/members",
+    location_path: users_production_path(@production),
+    members_create_path: production_user_productions_path(@production),
+    member_update_path: ->(m) { production_user_production_path(@production, m) },
+    member_destroy_path: ->(m) { production_user_production_path(@production, m) },
+    members: @members,
+    search_results: @member_search_results,
+    roles: UserProduction::ROLES

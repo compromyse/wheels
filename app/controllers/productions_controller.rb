@@ -1,23 +1,27 @@
 class ProductionsController < ApplicationController
   before_action :set_production
   before_action :check_access
+  before_action :set_location_nav
 
   def show
+    redirect_to tickets_production_path(@production)
+  end
+
+  def tickets
     @tab = params[:tab].presence_in(%w[requested pending completed delivered distributed]) || "requested"
     scope = @production.bike_requests.where(status: @tab)
                     .includes(:distribution, :user, :assignee)
                     .order(due_date: :asc)
     @pagy, @bike_requests = pagy(scope, limit: 20)
+  end
 
-    if production_admin?(@production)
-      @members = @production.user_productions.includes(:user).order("users.name")
-      if params[:member_query].present?
-        query = "%#{params[:member_query]}%"
-        assigned_ids = @production.users.pluck(:id)
-        @member_search_results = User.where("name ILIKE ? OR email ILIKE ?", query, query)
-                                     .where.not(id: assigned_ids)
-                                     .order(:name).limit(10)
-      end
+  def users
+    render plain: "Access denied", status: :forbidden and return unless @location_admin
+    @members = @production.user_productions.includes(:user).order("users.name")
+    if params[:member_query].present?
+      query = "%#{params[:member_query]}%"
+      @member_search_results = User.where("name ILIKE ? OR email ILIKE ?", query, query)
+                                   .order(:name).limit(10)
     end
   end
 
@@ -29,5 +33,12 @@ class ProductionsController < ApplicationController
 
   def check_access
     require_production_access(@production)
+  end
+
+  def set_location_nav
+    @location_name   = @production.name
+    @location_path   = tickets_production_path(@production)
+    @location_admin  = production_admin?(@production)
+    @location_users_path = users_production_path(@production)
   end
 end

@@ -19,10 +19,14 @@ Rails.application.routes.draw do
 
   resources :bike_requests,  only: [ :update ]
   resources :productions,    only: [ :show ] do
+    get :tickets, on: :member
+    get :users,   on: :member
     resources :user_productions, only: [ :create, :update, :destroy ]
   end
   resources :distributions,  only: [ :show ] do
-    resources :bike_requests,    only: [ :new, :create ]
+    get :tickets, on: :member
+    get :users,   on: :member
+    resources :bike_requests,      only: [ :new, :create ]
     resources :user_distributions, only: [ :create, :update, :destroy ]
   end
 end

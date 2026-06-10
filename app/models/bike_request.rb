@@ -7,7 +7,7 @@ class BikeRequest < ApplicationRecord
   enum :bike_type, { male: 0, female: 1, kid: 2 }
   enum :status, { requested: 0, pending: 1, completed: 2, delivered: 3, distributed: 4 }
 
-  validates :phone, presence: true
+  validates :phone, presence: true, format: { with: /\A\d{10}\z/, message: "must be exactly 10 digits" }
   validates :bike_type, presence: true
   validates :requestor_name, presence: true
   validates :due_date, presence: true

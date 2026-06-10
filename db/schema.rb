@@ -10,9 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_09_230002) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_10_011454) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+  enable_extension "pg_trgm"
 
   create_table "bike_requests", force: :cascade do |t|
     t.integer "age"
@@ -80,6 +81,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_09_230002) do
     t.boolean "superadmin", default: false, null: false
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["email"], name: "index_users_on_email_trgm", opclass: :gin_trgm_ops, using: :gin
+    t.index ["name"], name: "index_users_on_name_trgm", opclass: :gin_trgm_ops, using: :gin
   end
 
   add_foreign_key "bike_requests", "distributions"
