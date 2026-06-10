@@ -19,10 +19,10 @@ Rails.application.routes.draw do
 
   resources :bike_requests,  only: [ :update ]
   resources :productions,    only: [ :show ] do
-    resources :user_productions, only: [ :create, :destroy ]
+    resources :user_productions, only: [ :create, :update, :destroy ]
   end
   resources :distributions,  only: [ :show ] do
     resources :bike_requests,    only: [ :new, :create ]
-    resources :user_distributions, only: [ :create, :destroy ]
+    resources :user_distributions, only: [ :create, :update, :destroy ]
   end
 end

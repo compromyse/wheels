@@ -49,6 +49,23 @@ class UserDistributionsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "User not found.", flash[:alert]
   end
 
+  # --- update ---
+
+  test "update returns 403 for non-admin" do
+    post login_path, params: { email: users(:prod_volunteer).email, password: "password" }
+    ud = user_distributions(:dist_user_downtown)
+    patch distribution_user_distribution_path(distributions(:downtown_dist), ud), params: { role: "admin" }
+    assert_response :forbidden
+  end
+
+  test "update changes role for location admin" do
+    login_as_dist_admin
+    ud = UserDistribution.create!(user: users(:no_location_user), distribution: distributions(:downtown_dist), role: "volunteer")
+    patch distribution_user_distribution_path(distributions(:downtown_dist), ud), params: { role: "admin" }
+    assert_redirected_to distribution_path(distributions(:downtown_dist))
+    assert_equal "admin", ud.reload.role
+  end
+
   # --- destroy ---
 
   test "destroy returns 403 for non-admin" do

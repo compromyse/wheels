@@ -38,6 +38,8 @@ Each card will eventually have a print button (not yet implemented — keep the 
 
 Do not include a Co-Authored-By line in commit messages.
 
+Write commit messages with a subject line and a body. The body should explain what changed, why, and what the tests cover — two to three sentences minimum. One-line subjects alone are not enough.
+
 ## Testing
 
 Every new feature and every change to existing behaviour must have tests before committing. Run the full suite with `PGDATA=$(pwd)/pgdata rails test` and confirm it passes. Do not commit with failing or missing tests.

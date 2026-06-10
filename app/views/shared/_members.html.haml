@@ -18,7 +18,7 @@
             %p.text-lg.text-gray-500= user.email
           = form_with url: members_create_path, method: :post, class: "flex items-center gap-3" do |f|
             = f.hidden_field :user_id, value: user.id
-            = f.select :role, [["Volunteer", "volunteer"], ["Admin", "admin"]],
+            = f.select :role, roles.map { |r| [r.capitalize, r] },
                 {}, class: "px-3 py-2 text-lg border-2 border-gray-400 bg-white"
             = f.submit "Add", class: "px-4 py-2 text-lg font-bold text-white bg-gray-900 hover:bg-gray-700 cursor-pointer transition-colors"
   - elsif params[:member_query].present?
@@ -32,8 +32,11 @@
           .space-y-0.5
             %p.text-xl.font-bold.text-gray-900= membership.user.name
             %p.text-lg.text-gray-500= membership.user.email
-          .flex.items-center.gap-4
-            %span.text-lg.text-gray-600= membership.role.capitalize
+          .flex.items-center.gap-3
+            = form_with url: member_update_path.call(membership), method: :patch, class: "flex items-center gap-2" do |f|
+              = f.select :role, roles.map { |r| [r.capitalize, r] }, { selected: membership.role },
+                  class: "px-3 py-2 text-lg border-2 border-gray-400 bg-white"
+              = f.submit "Save", class: "px-3 py-2 text-lg font-medium text-gray-900 underline bg-transparent border-0 cursor-pointer"
             = button_to "Remove", member_destroy_path.call(membership), method: :delete,
                 data: { turbo_confirm: "Remove #{membership.user.name}?" },
                 class: "px-4 py-2 text-lg font-medium text-red-700 underline bg-transparent border-0 cursor-pointer"

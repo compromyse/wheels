@@ -62,6 +62,31 @@ class UserProductionsControllerTest < ActionDispatch::IntegrationTest
     assert flash[:alert].present?
   end
 
+  # --- update ---
+
+  test "update returns 403 for volunteer" do
+    login_as_prod_volunteer
+    up = user_productions(:prod_admin_main)
+    patch production_user_production_path(productions(:main_production), up), params: { role: "volunteer" }
+    assert_response :forbidden
+  end
+
+  test "update changes role for location admin" do
+    login_as_prod_admin
+    up = UserProduction.create!(user: users(:no_location_user), production: productions(:main_production), role: "volunteer")
+    patch production_user_production_path(productions(:main_production), up), params: { role: "admin" }
+    assert_redirected_to production_path(productions(:main_production))
+    assert_equal "admin", up.reload.role
+  end
+
+  test "update rejects invalid role" do
+    login_as_prod_admin
+    up = UserProduction.create!(user: users(:no_location_user), production: productions(:main_production), role: "volunteer")
+    patch production_user_production_path(productions(:main_production), up), params: { role: "superuser" }
+    assert_redirected_to production_path(productions(:main_production))
+    assert_equal flash[:alert], "Invalid role."
+  end
+
   # --- destroy ---
 
   test "destroy returns 403 for volunteer" do

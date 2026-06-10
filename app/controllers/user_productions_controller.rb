@@ -8,11 +8,21 @@ class UserProductionsController < ApplicationController
       redirect_to production_path(@production), alert: "User not found."
       return
     end
-    up = @production.user_productions.build(user: user, role: params[:role].presence_in(%w[admin volunteer]) || "volunteer")
+    up = @production.user_productions.build(user: user, role: params[:role].presence_in(UserProduction::ROLES) || "volunteer")
     if up.save
       redirect_to production_path(@production), notice: "#{user.name} added."
     else
       redirect_to production_path(@production), alert: up.errors.full_messages.first
+    end
+  end
+
+  def update
+    up = @production.user_productions.find(params[:id])
+    role = params[:role].presence_in(UserProduction::ROLES)
+    if role && up.update(role: role)
+      redirect_to production_path(@production), notice: "Role updated."
+    else
+      redirect_to production_path(@production), alert: "Invalid role."
     end
   end
 
