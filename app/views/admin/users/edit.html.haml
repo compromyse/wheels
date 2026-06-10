@@ -1,0 +1,8 @@
+- content_for :title, "Edit User"
+%h1.text-3xl.font-bold.text-gray-900.mb-8= "Edit #{@user.name}"
+
+- user_productions_map = @user.user_productions.index_by(&:production_id).transform_values { |up| { role: up.role } }
+- user_distributions_map = @user.user_distributions.index_by(&:distribution_id).transform_values { |ud| { role: ud.role } }
+
+= render "form", user: @user, productions: @productions, distributions: @distributions,
+    user_productions_map: user_productions_map, user_distributions_map: user_distributions_map

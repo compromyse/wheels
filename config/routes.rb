@@ -11,7 +11,7 @@ Rails.application.routes.draw do
     root to: "dashboard#index"
     resources :productions,   only: [ :index, :new, :create, :destroy ]
     resources :distributions, only: [ :index, :new, :create, :edit, :update, :destroy ]
-    resources :users,         only: [ :index, :new, :create, :destroy ]
+    resources :users,         only: [ :index, :new, :create, :edit, :update, :destroy ]
   end
 
   resources :bike_requests,  only: [ :update ]

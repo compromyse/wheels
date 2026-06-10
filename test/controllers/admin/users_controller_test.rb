@@ -113,6 +113,74 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     assert_includes user.distributions, dist
   end
 
+  # --- edit ---
+
+  test "edit requires superadmin" do
+    login_as_regular_user
+    get edit_admin_user_path(users(:no_location_user))
+    assert_response :forbidden
+  end
+
+  test "edit renders form for superadmin" do
+    login_as_superadmin
+    get edit_admin_user_path(users(:no_location_user))
+    assert_response :success
+  end
+
+  # --- update ---
+
+  test "update requires superadmin" do
+    login_as_regular_user
+    patch admin_user_path(users(:no_location_user)), params: { user: { name: "Changed" } }
+    assert_response :forbidden
+  end
+
+  test "update changes user attributes" do
+    login_as_superadmin
+    user = users(:no_location_user)
+    patch admin_user_path(user), params: { user: { name: "Updated Name", email: user.email } }
+    assert_redirected_to admin_users_path
+    assert_equal "Updated Name", user.reload.name
+  end
+
+  test "update with blank password does not change password" do
+    login_as_superadmin
+    user = users(:no_location_user)
+    old_digest = user.password_digest
+    patch admin_user_path(user), params: { user: { name: user.name, email: user.email, password: "" } }
+    assert_redirected_to admin_users_path
+    assert_equal old_digest, user.reload.password_digest
+  end
+
+  test "update with new password changes password" do
+    login_as_superadmin
+    user = users(:no_location_user)
+    patch admin_user_path(user), params: { user: { name: user.name, email: user.email, password: "newpassword" } }
+    assert_redirected_to admin_users_path
+    assert user.reload.authenticate("newpassword")
+  end
+
+  test "update replaces location assignments" do
+    login_as_superadmin
+    user = users(:prod_admin)
+    dist = distributions(:downtown_dist)
+    assert_difference "UserDistribution.count", 1 do
+      patch admin_user_path(user), params: {
+        user: { name: user.name, email: user.email },
+        distribution_assignments: [
+          { distribution_id: dist.id, enabled: "1", role: "volunteer" }
+        ]
+      }
+    end
+    assert_includes user.reload.distributions, dist
+  end
+
+  test "update with invalid params re-renders edit" do
+    login_as_superadmin
+    patch admin_user_path(users(:no_location_user)), params: { user: { name: "", email: "" } }
+    assert_response :unprocessable_entity
+  end
+
   # --- destroy ---
 
   test "destroy requires superadmin" do

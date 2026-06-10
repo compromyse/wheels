@@ -1,5 +1,5 @@
 class Admin::UsersController < Admin::BaseController
-  before_action :set_user, only: [:destroy]
+  before_action :set_user, only: [ :edit, :update, :destroy ]
 
   def index
     @users = User.includes(:productions, :distributions).all
@@ -14,12 +14,30 @@ class Admin::UsersController < Admin::BaseController
   def create
     @user = User.new(user_params)
     if @user.save
-      create_location_assignments
+      sync_location_assignments
       redirect_to admin_users_path, notice: "User added."
     else
       @productions = Production.all
       @distributions = Distribution.all
       render :new, status: :unprocessable_entity
+    end
+  end
+
+  def edit
+    @productions = Production.all
+    @distributions = Distribution.all
+  end
+
+  def update
+    attributes = user_params
+    attributes = attributes.except(:password, :password_confirmation) if attributes[:password].blank?
+    if @user.update(attributes)
+      sync_location_assignments
+      redirect_to admin_users_path, notice: "User updated."
+    else
+      @productions = Production.all
+      @distributions = Distribution.all
+      render :edit, status: :unprocessable_entity
     end
   end
 
@@ -42,7 +60,10 @@ class Admin::UsersController < Admin::BaseController
     params.require(:user).permit(:name, :email, :password, :password_confirmation, :superadmin)
   end
 
-  def create_location_assignments
+  def sync_location_assignments
+    @user.user_productions.destroy_all
+    @user.user_distributions.destroy_all
+
     Array(params[:production_assignments]).each do |assignment|
       next unless assignment[:enabled] == "1" && assignment[:production_id].present?
       @user.user_productions.create!(

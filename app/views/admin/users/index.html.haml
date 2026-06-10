@@ -15,9 +15,12 @@
           - assignments += user.productions.map(&:name)
           - assignments += user.distributions.map(&:name)
           %p.text-lg.text-gray-600= assignments.join(" · ")
-        - unless user == current_user
-          = button_to "Remove", admin_user_path(user), method: :delete,
-              data: { turbo_confirm: "Remove #{user.name}?" },
-              class: "px-4 py-2 text-lg font-medium text-red-700 underline bg-transparent border-0 cursor-pointer shrink-0"
+        .flex.items-center.gap-4.shrink-0
+          = link_to "Edit", edit_admin_user_path(user),
+              class: "px-4 py-2 text-lg font-medium text-gray-900 underline"
+          - unless user == current_user
+            = button_to "Remove", admin_user_path(user), method: :delete,
+                data: { turbo_confirm: "Remove #{user.name}?" },
+                class: "px-4 py-2 text-lg font-medium text-red-700 underline bg-transparent border-0 cursor-pointer shrink-0"
 - else
   %p.text-xl.text-gray-500 No users yet.
