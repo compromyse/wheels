@@ -18,8 +18,11 @@ Rails.application.routes.draw do
   end
 
   resources :bike_requests,  only: [ :update ]
-  resources :productions,    only: [ :show ]
+  resources :productions,    only: [ :show ] do
+    resources :user_productions, only: [ :create, :destroy ]
+  end
   resources :distributions,  only: [ :show ] do
-    resources :bike_requests, only: [ :new, :create ]
+    resources :bike_requests,    only: [ :new, :create ]
+    resources :user_distributions, only: [ :create, :destroy ]
   end
 end

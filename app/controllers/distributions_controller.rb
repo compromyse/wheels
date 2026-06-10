@@ -8,6 +8,17 @@ class DistributionsController < ApplicationController
                                 .includes(:user, :assignee)
                                 .order(due_date: :asc)
     @pagy, @bike_requests = pagy(scope, limit: 20)
+
+    if distribution_admin?(@distribution)
+      @members = @distribution.user_distributions.includes(:user).order("users.name")
+      if params[:member_query].present?
+        query = "%#{params[:member_query]}%"
+        assigned_ids = @distribution.users.pluck(:id)
+        @member_search_results = User.where("name ILIKE ? OR email ILIKE ?", query, query)
+                                     .where.not(id: assigned_ids)
+                                     .order(:name).limit(10)
+      end
+    end
   end
 
   private

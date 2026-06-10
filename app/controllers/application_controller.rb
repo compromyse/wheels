@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
 
   before_action :require_authentication
 
-  helper_method :current_user
+  helper_method :current_user, :production_admin?, :distribution_admin?
 
   private
 
@@ -33,5 +33,15 @@ class ApplicationController < ActionController::Base
     unless current_user&.distributions&.include?(distribution)
       render plain: "Access denied", status: :forbidden
     end
+  end
+
+  def production_admin?(production)
+    current_user&.superadmin? ||
+      current_user&.user_productions&.find_by(production: production)&.role == "admin"
+  end
+
+  def distribution_admin?(distribution)
+    current_user&.superadmin? ||
+      current_user&.user_distributions&.find_by(distribution: distribution)&.role == "admin"
   end
 end

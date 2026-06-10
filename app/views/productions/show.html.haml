@@ -2,3 +2,11 @@
 %h1.text-3xl.font-bold.text-gray-900.mb-8= @production.name
 
 = render "bike_requests/list", active_tab: @tab, bike_requests: @bike_requests, pagy: @pagy, production_view: true
+
+- if production_admin?(@production)
+  = render "shared/members",
+      location_path: production_path(@production),
+      members_create_path: production_user_productions_path(@production),
+      member_destroy_path: ->(m) { production_user_production_path(@production, m) },
+      members: @members,
+      search_results: @member_search_results

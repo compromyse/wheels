@@ -5,3 +5,11 @@
       class: "px-6 py-3 text-lg font-bold text-white bg-gray-900 hover:bg-gray-700 transition-colors"
 
 = render "bike_requests/list", active_tab: @tab, bike_requests: @bike_requests, pagy: @pagy, production_view: false
+
+- if distribution_admin?(@distribution)
+  = render "shared/members",
+      location_path: distribution_path(@distribution),
+      members_create_path: distribution_user_distributions_path(@distribution),
+      member_destroy_path: ->(m) { distribution_user_distribution_path(@distribution, m) },
+      members: @members,
+      search_results: @member_search_results
