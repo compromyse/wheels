@@ -37,9 +37,10 @@ class DistributionsController < ApplicationController
   end
 
   def set_location_nav
-    @location_name       = @distribution.name
-    @location_path       = tickets_distribution_path(@distribution)
-    @location_admin      = distribution_admin?(@distribution)
-    @location_users_path = users_distribution_path(@distribution)
+    @location_name         = @distribution.name
+    @location_path         = tickets_distribution_path(@distribution)
+    @location_admin        = distribution_admin?(@distribution)
+    @location_users_path   = users_distribution_path(@distribution)
+    @location_show_tickets = true
   end
 end

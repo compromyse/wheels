@@ -37,9 +37,10 @@ class ProductionsController < ApplicationController
   end
 
   def set_location_nav
-    @location_name   = @production.name
-    @location_path   = tickets_production_path(@production)
-    @location_admin  = production_admin?(@production)
-    @location_users_path = users_production_path(@production)
+    @location_name         = @production.name
+    @location_path         = tickets_production_path(@production)
+    @location_admin        = production_admin?(@production)
+    @location_users_path   = users_production_path(@production)
+    @location_show_tickets = true
   end
 end

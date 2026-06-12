@@ -10,7 +10,7 @@ class HomeController < ApplicationController
       end
     end
 
-    @productions = current_user.productions
-    @distributions = current_user.distributions
+    @productions = current_user.superadmin? ? Production.order(:name) : current_user.productions
+    @distributions = current_user.superadmin? ? Distribution.order(:name) : current_user.distributions
   end
 end
