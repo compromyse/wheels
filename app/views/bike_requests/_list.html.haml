@@ -3,6 +3,7 @@
   - tabs.each do |tab|
     = link_to url_for(tab: tab), class: "px-6 py-3 text-lg font-medium #{active_tab == tab ? 'font-bold border-b-4 border-gray-900 -mb-0.5' : 'text-gray-500'}" do
       = tab.capitalize
+      %span.ml-1= "(#{tab_counts[tab] || 0})"
 
 - if bike_requests.any?
   .space-y-4
