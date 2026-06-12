@@ -61,6 +61,8 @@ class Admin::UsersController < Admin::BaseController
   end
 
   def sync_location_assignments
+    return if @user.superadmin?
+
     @user.user_productions.destroy_all
     @user.user_distributions.destroy_all
 

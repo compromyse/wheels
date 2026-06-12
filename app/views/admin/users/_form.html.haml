@@ -29,35 +29,36 @@
     = f.check_box :superadmin, class: "w-6 h-6 border-2 border-gray-400"
     = f.label :superadmin, "Superadmin", class: "text-xl font-medium text-gray-900"
 
-  - if productions.any?
-    %fieldset.space-y-3
-      %legend.text-xl.font-semibold.text-gray-900.mb-3 Production Access
-      - productions.each do |production|
-        - assigned = user_productions_map[production.id]
-        .flex.items-center.gap-4.py-3.border-b.border-gray-200
-          %input{type: "checkbox", name: "production_access_enabled[#{production.id}]",
-              id: "production_#{production.id}", value: "1", checked: assigned.present?,
-              class: "w-6 h-6 border-2 border-gray-400"}
-          %label{for: "production_#{production.id}", class: "text-xl text-gray-900 flex-1"}= production.name
-          %select{name: "production_access_role[#{production.id}]",
-              class: "px-3 py-2 text-lg border-2 border-gray-400 bg-white"}
-            - UserProduction::ROLES.each do |role|
-              %option{value: role, selected: (assigned&.dig(:role) || "volunteer") == role}= role.capitalize
+  - unless user.superadmin?
+    - if productions.any?
+      %fieldset.space-y-3
+        %legend.text-xl.font-semibold.text-gray-900.mb-3 Production Access
+        - productions.each do |production|
+          - assigned = user_productions_map[production.id]
+          .flex.items-center.gap-4.py-3.border-b.border-gray-200
+            %input{type: "checkbox", name: "production_access_enabled[#{production.id}]",
+                id: "production_#{production.id}", value: "1", checked: assigned.present?,
+                class: "w-6 h-6 border-2 border-gray-400"}
+            %label{for: "production_#{production.id}", class: "text-xl text-gray-900 flex-1"}= production.name
+            %select{name: "production_access_role[#{production.id}]",
+                class: "px-3 py-2 text-lg border-2 border-gray-400 bg-white"}
+              - UserProduction::ROLES.each do |role|
+                %option{value: role, selected: (assigned&.dig(:role) || "volunteer") == role}= role.capitalize
 
-  - if distributions.any?
-    %fieldset.space-y-3
-      %legend.text-xl.font-semibold.text-gray-900.mb-3 Distribution Access
-      - distributions.each do |dist|
-        - assigned = user_distributions_map[dist.id]
-        .flex.items-center.gap-4.py-3.border-b.border-gray-200
-          %input{type: "checkbox", name: "distribution_access_enabled[#{dist.id}]",
-              id: "dist_#{dist.id}", value: "1", checked: assigned.present?,
-              class: "w-6 h-6 border-2 border-gray-400"}
-          %label{for: "dist_#{dist.id}", class: "text-xl text-gray-900 flex-1"}= dist.name
-          %select{name: "distribution_access_role[#{dist.id}]",
-              class: "px-3 py-2 text-lg border-2 border-gray-400 bg-white"}
-            - UserDistribution::ROLES.each do |role|
-              %option{value: role, selected: (assigned&.dig(:role) || "volunteer") == role}= role.capitalize
+    - if distributions.any?
+      %fieldset.space-y-3
+        %legend.text-xl.font-semibold.text-gray-900.mb-3 Distribution Access
+        - distributions.each do |dist|
+          - assigned = user_distributions_map[dist.id]
+          .flex.items-center.gap-4.py-3.border-b.border-gray-200
+            %input{type: "checkbox", name: "distribution_access_enabled[#{dist.id}]",
+                id: "dist_#{dist.id}", value: "1", checked: assigned.present?,
+                class: "w-6 h-6 border-2 border-gray-400"}
+            %label{for: "dist_#{dist.id}", class: "text-xl text-gray-900 flex-1"}= dist.name
+            %select{name: "distribution_access_role[#{dist.id}]",
+                class: "px-3 py-2 text-lg border-2 border-gray-400 bg-white"}
+              - UserDistribution::ROLES.each do |role|
+                %option{value: role, selected: (assigned&.dig(:role) || "volunteer") == role}= role.capitalize
 
   .flex.gap-4
     = f.submit (user.persisted? ? "Save Changes" : "Add User"),
