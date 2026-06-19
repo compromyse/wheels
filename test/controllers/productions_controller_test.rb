@@ -53,7 +53,7 @@ class ProductionsControllerTest < ActionDispatch::IntegrationTest
     other_prod = Production.create!(name: "Other Production")
     other_request = BikeRequest.create!(
       phone: "5550000001", requestor_name: "Other", due_date: 10.days.from_now,
-      bike_type: :male, distribution: distributions(:downtown_dist),
+      distribution: distributions(:downtown_dist),
       production: other_prod, user: users(:dist_user)
     )
     get tickets_production_path(productions(:main_production)), params: { tab: "requested" }

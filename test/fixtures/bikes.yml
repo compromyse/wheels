@@ -1,0 +1,14 @@
+requested_bike_bike:
+  bike_request: requested_bike
+  bike_type: 0
+  completed: false
+
+completed_bike_bike_one:
+  bike_request: completed_bike
+  bike_type: 1
+  completed: true
+
+completed_bike_bike_two:
+  bike_request: completed_bike
+  bike_type: 0
+  completed: true

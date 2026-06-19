@@ -52,7 +52,7 @@ class DistributionsControllerTest < ActionDispatch::IntegrationTest
     post login_path, params: { email: users(:dist_user).email, password: "password" }
     other_request = BikeRequest.create!(
       phone: "5550000002", requestor_name: "Other", due_date: 10.days.from_now,
-      bike_type: :male, distribution: distributions(:uptown_dist),
+      distribution: distributions(:uptown_dist),
       production: productions(:main_production), user: users(:dist_user)
     )
     get tickets_distribution_path(distributions(:downtown_dist)), params: { tab: "requested" }

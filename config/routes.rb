@@ -18,6 +18,7 @@ Rails.application.routes.draw do
   end
 
   resources :bike_requests,  only: [ :update ]
+  resources :bikes,          only: [ :update ]
   resources :productions,    only: [ :show ] do
     get :tickets, on: :member
     get :users,   on: :member

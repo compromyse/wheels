@@ -10,32 +10,38 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_10_011454) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_18_233950) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
 
   create_table "bike_requests", force: :cascade do |t|
-    t.integer "age"
-    t.bigint "assignee_id"
-    t.integer "bike_type", null: false
     t.datetime "created_at", null: false
     t.bigint "distribution_id", null: false
     t.date "due_date", null: false
-    t.string "height"
-    t.text "notes"
     t.string "phone", null: false
     t.bigint "production_id", null: false
-    t.string "recipient_name"
     t.string "requestor_name", null: false
     t.integer "status", default: 0, null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
-    t.index ["assignee_id"], name: "index_bike_requests_on_assignee_id"
     t.index ["distribution_id"], name: "index_bike_requests_on_distribution_id"
     t.index ["production_id"], name: "index_bike_requests_on_production_id"
     t.index ["status"], name: "index_bike_requests_on_status"
     t.index ["user_id"], name: "index_bike_requests_on_user_id"
+  end
+
+  create_table "bikes", force: :cascade do |t|
+    t.integer "age"
+    t.bigint "bike_request_id", null: false
+    t.integer "bike_type", default: 0, null: false
+    t.boolean "completed", default: false, null: false
+    t.datetime "created_at", null: false
+    t.string "height"
+    t.string "name"
+    t.text "notes"
+    t.datetime "updated_at", null: false
+    t.index ["bike_request_id"], name: "index_bikes_on_bike_request_id"
   end
 
   create_table "distributions", force: :cascade do |t|
@@ -88,7 +94,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_10_011454) do
   add_foreign_key "bike_requests", "distributions"
   add_foreign_key "bike_requests", "productions"
   add_foreign_key "bike_requests", "users"
-  add_foreign_key "bike_requests", "users", column: "assignee_id"
+  add_foreign_key "bikes", "bike_requests"
   add_foreign_key "user_distributions", "distributions"
   add_foreign_key "user_distributions", "users"
   add_foreign_key "user_productions", "productions"

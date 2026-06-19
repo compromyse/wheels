@@ -2,28 +2,15 @@ requested_bike:
   phone: "5555551234"
   requestor_name: Alice Smith
   due_date: <%= 30.days.from_now.to_date %>
-  bike_type: 0
   status: 0
   distribution: downtown_dist
   production: main_production
   user: dist_user
 
-pending_bike:
-  phone: "5555555678"
-  requestor_name: Bob Jones
-  due_date: <%= 20.days.from_now.to_date %>
-  bike_type: 1
-  status: 1
-  distribution: downtown_dist
-  production: main_production
-  user: dist_user
-  assignee: prod_admin
-
 completed_bike:
   phone: "5555559999"
   requestor_name: Carol White
   due_date: <%= 10.days.from_now.to_date %>
-  bike_type: 2
   status: 2
   distribution: downtown_dist
   production: main_production

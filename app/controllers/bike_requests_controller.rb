@@ -6,6 +6,7 @@ class BikeRequestsController < ApplicationController
 
   def new
     @bike_request = BikeRequest.new(due_date: Date.today + 14)
+    @bike_request.bikes.build
     @production = Production.first
   end
 
@@ -25,11 +26,9 @@ class BikeRequestsController < ApplicationController
 
   def update
     attributes = case params[:status]
-    when "pending"    then { status: :pending, assignee: current_user }
-    when "completed"  then { status: :completed }
-    when "delivered"  then { status: :delivered }
-    when "distributed" then { status: :distributed }
-    when "requested"  then { status: :requested, assignee: nil }
+    when "completed"    then { status: :completed }
+    when "delivered"    then { status: :delivered }
+    when "distributed"  then { status: :distributed }
     end
 
     original_status = @bike_request.status
@@ -61,6 +60,9 @@ class BikeRequestsController < ApplicationController
   end
 
   def bike_request_params
-    params.require(:bike_request).permit(:phone, :requestor_name, :due_date, :recipient_name, :bike_type, :age, :height, :notes)
+    params.require(:bike_request).permit(
+      :phone, :requestor_name, :due_date,
+      bikes_attributes: [ :name, :bike_type, :age, :height, :notes ]
+    )
   end
 end
