@@ -1,3 +1,19 @@
+:javascript
+  function printBikeLabel(name, type, age, height, notes, requestor, phone, due) {
+    var lines = [];
+    if (name) lines.push('<p style="font-size:18pt;font-weight:bold;margin:0">' + name + '</p>');
+    var detail = type;
+    if (age) detail += ' &middot; Age ' + age;
+    if (height) detail += ' &middot; ' + height;
+    lines.push('<p style="font-size:14pt;margin:4px 0">' + detail + '</p>');
+    if (notes) lines.push('<p style="font-size:12pt;margin:4px 0">' + notes + '</p>');
+    lines.push('<p style="font-size:11pt;color:#555;margin:8px 0 0">' + requestor + ' &middot; ' + phone + '</p>');
+    lines.push('<p style="font-size:11pt;color:#555;margin:2px 0">Due ' + due + '</p>');
+    var win = window.open('', '_blank', 'width=400,height=300');
+    win.document.write('<html><body style="font-family:sans-serif;padding:12px">' + lines.join('') + '<script>window.onload=function(){window.print();window.close();}<\/script></body></html>');
+    win.document.close();
+  }
+
 - tabs = %w[requested completed delivered distributed]
 .flex.border-b-2.border-gray-900.mb-8
   - tabs.each do |tab|
@@ -29,6 +45,7 @@
                 %th.text-left.px-3.py-2.text-lg.font-semibold.text-gray-700 Notes
                 - if production_view
                   %th
+                %th
             %tbody
               - req.bikes.each do |bike|
                 %tr.border-b.border-gray-200
@@ -45,9 +62,22 @@
                       - else
                         = button_to "Done", bike_path(bike), method: :patch,
                             class: "px-3 py-1 text-lg font-bold text-white bg-gray-900 hover:bg-gray-700 cursor-pointer transition-colors border-0"
+                  %td.px-3.py-2
+                    %button.px-3.py-1.text-lg.font-medium.text-gray-900.underline.bg-transparent.border-0.cursor-pointer{
+                        type: "button",
+                        onclick: "printBikeLabel(#{[
+                          bike.name.presence || '',
+                          bike.bike_type.capitalize,
+                          bike.age&.to_s || '',
+                          bike.height.presence || '',
+                          bike.notes.presence || '',
+                          req.requestor_name,
+                          req.phone,
+                          req.due_date.strftime('%-m/%-d/%Y')
+                        ].map { |v| v.to_json }.join(',')})"} Print
 
         - if production_view
-          .flex.gap-4.pt-2.border-t.border-gray-200
+          .flex.gap-4.mt-2
             - if req.completed?
               = button_to "Mark Delivered", bike_request_path(req), method: :patch, params: { status: "delivered" },
                   class: "px-6 py-3 text-lg font-bold text-white bg-gray-900 hover:bg-gray-700 cursor-pointer transition-colors border-0"
