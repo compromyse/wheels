@@ -105,6 +105,31 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     assert_includes user.distributions, dist
   end
 
+  test "create skips location assignments for superadmin user" do
+    login_as_superadmin
+    prod = productions(:main_production)
+    params = new_user_params.merge(superadmin: true)
+    assert_no_difference "UserProduction.count" do
+      post admin_users_path, params: {
+        user: params,
+        production_access_enabled: { prod.id => "1" },
+        production_access_role: { prod.id => "volunteer" }
+      }
+    end
+  end
+
+  test "update skips location assignments for superadmin user" do
+    login_as_superadmin
+    prod = productions(:main_production)
+    assert_no_difference "UserProduction.count" do
+      patch admin_user_path(users(:superadmin)), params: {
+        user: { name: users(:superadmin).name, email: users(:superadmin).email },
+        production_access_enabled: { prod.id => "1" },
+        production_access_role: { prod.id => "volunteer" }
+      }
+    end
+  end
+
   # --- edit ---
 
   test "edit requires superadmin" do

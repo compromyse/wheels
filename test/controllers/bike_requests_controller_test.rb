@@ -106,6 +106,34 @@ class BikeRequestsControllerTest < ActionDispatch::IntegrationTest
     assert bike_requests(:completed_bike).reload.distributed?
   end
 
+  test "update completed sets status to completed" do
+    post login_path, params: { email: users(:prod_admin).email, password: "password" }
+    patch bike_request_path(bike_requests(:requested_bike)), params: { status: "completed" }
+    assert bike_requests(:requested_bike).reload.completed?
+  end
+
+  test "update delivered from completed sets status to delivered" do
+    post login_path, params: { email: users(:prod_admin).email, password: "password" }
+    patch bike_request_path(bike_requests(:completed_bike)), params: { status: "delivered" }
+    assert bike_requests(:completed_bike).reload.delivered?
+  end
+
+  test "update back to completed from delivered" do
+    post login_path, params: { email: users(:prod_admin).email, password: "password" }
+    br = bike_requests(:completed_bike)
+    br.update_columns(status: BikeRequest.statuses[:delivered])
+    patch bike_request_path(br), params: { status: "completed" }
+    assert br.reload.completed?
+  end
+
+  test "update back to delivered from distributed" do
+    post login_path, params: { email: users(:prod_admin).email, password: "password" }
+    br = bike_requests(:completed_bike)
+    br.update_columns(status: BikeRequest.statuses[:distributed])
+    patch bike_request_path(br), params: { status: "delivered" }
+    assert br.reload.delivered?
+  end
+
   test "update redirects to production path with tab param" do
     post login_path, params: { email: users(:prod_admin).email, password: "password" }
     patch bike_request_path(bike_requests(:completed_bike)), params: { status: "delivered" }

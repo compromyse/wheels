@@ -41,6 +41,18 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     assert_match "no location assignments", response.body
   end
 
+  test "superadmin sees all productions on home page" do
+    post login_path, params: { email: users(:superadmin).email, password: "password" }
+    get root_path
+    assert_equal Production.count, assigns(:productions).count
+  end
+
+  test "superadmin sees all distributions on home page" do
+    post login_path, params: { email: users(:superadmin).email, password: "password" }
+    get root_path
+    assert_equal Distribution.count, assigns(:distributions).count
+  end
+
   test "superadmin with a location assignment renders home page with both location and admin panel link" do
     user = users(:superadmin_with_location)
     post login_path, params: { email: user.email, password: "password" }

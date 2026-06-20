@@ -10,9 +10,9 @@ class Bike < ApplicationRecord
 
   def sync_request_status
     req = bike_request
-    if req.bikes.all?(&:completed?)
+    if req.requested? && req.bikes.all?(&:completed?)
       req.update_columns(status: BikeRequest.statuses[:completed])
-    elsif req.completed?
+    elsif req.completed? && !req.bikes.all?(&:completed?)
       req.update_columns(status: BikeRequest.statuses[:requested])
     end
   end
