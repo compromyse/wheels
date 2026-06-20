@@ -6,6 +6,11 @@ class Bike < ApplicationRecord
 
   after_update :sync_request_status, if: :saved_change_to_completed?
 
+  def label_data
+    [ name.presence || "", bike_type.capitalize,
+      age&.to_s || "", height.presence || "", notes.presence || "" ]
+  end
+
   private
 
   def sync_request_status

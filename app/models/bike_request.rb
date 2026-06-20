@@ -13,6 +13,10 @@ class BikeRequest < ApplicationRecord
   validates :due_date, presence: true
   validate :due_date_in_future, on: :create
 
+  def bikes_label_data
+    bikes.map(&:label_data)
+  end
+
   private
 
   def due_date_in_future
