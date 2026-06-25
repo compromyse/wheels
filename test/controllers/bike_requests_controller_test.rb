@@ -50,6 +50,13 @@ class BikeRequestsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to tickets_distribution_path(distributions(:downtown_dist))
   end
 
+  test "create sets status to pending" do
+    post login_path, params: { email: users(:dist_user).email, password: "password" }
+    post distribution_bike_requests_path(distributions(:downtown_dist)),
+         params: { bike_request: valid_bike_request_params }
+    assert BikeRequest.last.pending?
+  end
+
   test "create saves nested bikes" do
     post login_path, params: { email: users(:dist_user).email, password: "password" }
     assert_difference "Bike.count", 2 do
@@ -81,17 +88,66 @@ class BikeRequestsControllerTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_entity
   end
 
-  # --- update ---
+  # --- edit ---
 
-  test "update requires authentication" do
-    patch bike_request_path(bike_requests(:completed_bike)), params: { status: "delivered" }
+  test "edit requires authentication" do
+    get edit_bike_request_path(bike_requests(:pending_bike))
     assert_redirected_to login_path
   end
 
-  test "update returns 403 for user without production access" do
-    post login_path, params: { email: users(:dist_user).email, password: "password" }
-    patch bike_request_path(bike_requests(:completed_bike)), params: { status: "delivered" }
+  test "edit returns 403 for user without distribution access" do
+    post login_path, params: { email: users(:prod_admin).email, password: "password" }
+    get edit_bike_request_path(bike_requests(:pending_bike))
     assert_response :forbidden
+  end
+
+  test "edit renders form for authorized distribution user on pending card" do
+    post login_path, params: { email: users(:dist_user).email, password: "password" }
+    get edit_bike_request_path(bike_requests(:pending_bike))
+    assert_response :success
+  end
+
+  test "edit renders form for authorized distribution user on denied card" do
+    post login_path, params: { email: users(:dist_user).email, password: "password" }
+    get edit_bike_request_path(bike_requests(:denied_bike))
+    assert_response :success
+  end
+
+  # --- update: production approve/deny ---
+
+  test "update approve requires authentication" do
+    patch bike_request_path(bike_requests(:pending_bike)), params: { status: "approve" }
+    assert_redirected_to login_path
+  end
+
+  test "update approve returns 403 for user without production access" do
+    post login_path, params: { email: users(:dist_user).email, password: "password" }
+    patch bike_request_path(bike_requests(:pending_bike)), params: { status: "approve" }
+    assert_response :forbidden
+  end
+
+  test "update approve sets status to requested" do
+    post login_path, params: { email: users(:prod_admin).email, password: "password" }
+    patch bike_request_path(bike_requests(:pending_bike)), params: { status: "approve" }
+    assert bike_requests(:pending_bike).reload.requested?
+  end
+
+  test "update approve redirects to production requested tab" do
+    post login_path, params: { email: users(:prod_admin).email, password: "password" }
+    patch bike_request_path(bike_requests(:pending_bike)), params: { status: "approve" }
+    assert_redirected_to tickets_production_path(productions(:main_production), tab: "requested")
+  end
+
+  test "update deny sets status to denied" do
+    post login_path, params: { email: users(:prod_admin).email, password: "password" }
+    patch bike_request_path(bike_requests(:pending_bike)), params: { status: "deny" }
+    assert bike_requests(:pending_bike).reload.denied?
+  end
+
+  test "update deny redirects to production pending tab" do
+    post login_path, params: { email: users(:prod_admin).email, password: "password" }
+    patch bike_request_path(bike_requests(:pending_bike)), params: { status: "deny" }
+    assert_redirected_to tickets_production_path(productions(:main_production), tab: "denied")
   end
 
   test "update delivered sets status to delivered" do
@@ -140,6 +196,49 @@ class BikeRequestsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to tickets_production_path(productions(:main_production), tab: "delivered")
   end
 
+  # --- update: distribution resubmit ---
+
+  test "resubmit requires authentication" do
+    patch bike_request_path(bike_requests(:denied_bike)),
+          params: { bike_request: resubmit_params }
+    assert_redirected_to login_path
+  end
+
+  test "resubmit returns 403 for user without distribution access" do
+    post login_path, params: { email: users(:prod_admin).email, password: "password" }
+    patch bike_request_path(bike_requests(:denied_bike)),
+          params: { bike_request: resubmit_params }
+    assert_response :forbidden
+  end
+
+  test "resubmit sets status to pending" do
+    post login_path, params: { email: users(:dist_user).email, password: "password" }
+    patch bike_request_path(bike_requests(:denied_bike)),
+          params: { bike_request: resubmit_params }
+    assert bike_requests(:denied_bike).reload.pending?
+  end
+
+  test "resubmit updates bike request fields" do
+    post login_path, params: { email: users(:dist_user).email, password: "password" }
+    patch bike_request_path(bike_requests(:denied_bike)),
+          params: { bike_request: resubmit_params }
+    assert_equal "Updated Name", bike_requests(:denied_bike).reload.requestor_name
+  end
+
+  test "resubmit redirects to distribution pending tab" do
+    post login_path, params: { email: users(:dist_user).email, password: "password" }
+    patch bike_request_path(bike_requests(:denied_bike)),
+          params: { bike_request: resubmit_params }
+    assert_redirected_to tickets_distribution_path(distributions(:downtown_dist), tab: "pending")
+  end
+
+  test "resubmit on pending card also sets pending" do
+    post login_path, params: { email: users(:dist_user).email, password: "password" }
+    patch bike_request_path(bike_requests(:pending_bike)),
+          params: { bike_request: resubmit_params }
+    assert bike_requests(:pending_bike).reload.pending?
+  end
+
   private
 
   def valid_bike_request_params
@@ -160,6 +259,15 @@ class BikeRequestsControllerTest < ActionDispatch::IntegrationTest
         "0" => { bike_type: "male", name: "Alice" },
         "1" => { bike_type: "female", name: "Bob" }
       }
+    }
+  end
+
+  def resubmit_params
+    {
+      phone: "5555550099",
+      requestor_name: "Updated Name",
+      due_date: (Date.today + 14).to_s,
+      bikes_attributes: {}
     }
   end
 end

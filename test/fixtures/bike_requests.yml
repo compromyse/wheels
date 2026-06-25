@@ -15,3 +15,21 @@ completed_bike:
   distribution: downtown_dist
   production: main_production
   user: dist_user
+
+pending_bike:
+  phone: "5555550011"
+  requestor_name: Bob Jones
+  due_date: <%= 20.days.from_now.to_date %>
+  status: 1
+  distribution: downtown_dist
+  production: main_production
+  user: dist_user
+
+denied_bike:
+  phone: "5555550022"
+  requestor_name: Dana Lee
+  due_date: <%= 15.days.from_now.to_date %>
+  status: 5
+  distribution: downtown_dist
+  production: main_production
+  user: dist_user

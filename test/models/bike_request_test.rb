@@ -72,9 +72,9 @@ class BikeRequestTest < ActiveSupport::TestCase
     assert br.valid?
   end
 
-  test "default status is requested" do
+  test "default status is pending" do
     br = valid_bike_request
-    assert br.requested?
+    assert br.pending?
   end
 
   test "status transitions through all values" do

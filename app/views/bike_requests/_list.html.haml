@@ -37,7 +37,7 @@
     win.document.close();
   }
 
-- tabs = %w[requested completed delivered distributed]
+- tabs = %w[pending requested completed delivered distributed]
 .flex.border-b-2.border-gray-900.mb-8
   - tabs.each do |tab|
     = link_to url_for(tab: tab), class: "px-6 py-3 text-lg font-medium #{active_tab == tab ? 'font-bold border-b-4 border-gray-900 -mb-0.5' : 'text-gray-500'}" do
@@ -47,7 +47,8 @@
 - if bike_requests.any?
   .space-y-4
     - bike_requests.each do |req|
-      .border-2.border-gray-900.px-6.py-5.space-y-4
+      - card_border = req.denied? ? "border-2 border-red-600" : "border-2 border-gray-900"
+      .px-6.py-5.space-y-4{class: card_border}
         .flex.items-start.justify-between.gap-4
           .space-y-1
             %p.text-2xl.font-bold.text-gray-900= req.distribution.name
@@ -65,7 +66,7 @@
                 %th.text-left.px-3.py-2.text-lg.font-semibold.text-gray-700 Age
                 %th.text-left.px-3.py-2.text-lg.font-semibold.text-gray-700 Height
                 %th.text-left.px-3.py-2.text-lg.font-semibold.text-gray-700 Notes
-                - if production_view
+                - if production_view && !req.pending?
                   %th
                 %th
             %tbody
@@ -76,7 +77,7 @@
                   %td.px-3.py-2.text-lg.text-gray-900= bike.age || "—"
                   %td.px-3.py-2.text-lg.text-gray-900= bike.height.presence || "—"
                   %td.px-3.py-2.text-lg.text-gray-900= bike.notes.presence || "—"
-                  - if production_view
+                  - if production_view && !req.pending?
                     %td.px-3.py-2
                       - if bike.completed?
                         = button_to "Undo", bike_path(bike), method: :patch,
@@ -87,9 +88,14 @@
                   %td.px-3.py-2
                     %button.px-3.py-1.text-lg.font-medium.text-gray-900.underline.bg-transparent.border-0.cursor-pointer{type: "button", onclick: "printBikeLabel(#{(bike.label_data + [req.requestor_name, req.phone, req.due_date.strftime('%-m/%-d/%Y')]).map(&:to_json).join(',')})"} Print
 
-        - if production_view
-          .flex.gap-4.mt-2
-            - if req.completed?
+        .flex.gap-4.mt-2
+          - if production_view
+            - if req.pending?
+              = button_to "Approve", bike_request_path(req), method: :patch, params: { status: "approve" },
+                  class: "px-6 py-3 text-lg font-bold text-white bg-gray-900 hover:bg-gray-700 cursor-pointer transition-colors border-0"
+              = button_to "Deny", bike_request_path(req), method: :patch, params: { status: "deny" },
+                  class: "px-4 py-2 text-lg font-medium text-red-700 underline bg-transparent border-0 cursor-pointer"
+            - elsif req.completed?
               = button_to "Mark Delivered", bike_request_path(req), method: :patch, params: { status: "delivered" },
                   class: "px-6 py-3 text-lg font-bold text-white bg-gray-900 hover:bg-gray-700 cursor-pointer transition-colors border-0"
             - elsif req.delivered?
@@ -100,6 +106,10 @@
             - elsif req.distributed?
               = button_to "Back to Delivered", bike_request_path(req), method: :patch, params: { status: "delivered" },
                   class: "px-4 py-2 text-lg font-medium text-gray-900 underline bg-transparent border-0 cursor-pointer"
+          - else
+            - if req.pending? || req.denied?
+              = link_to "Edit", edit_bike_request_path(req), class: "px-4 py-2 text-lg font-medium text-gray-900 underline"
+          - if production_view && !req.pending?
             %button.text-lg.font-medium.text-gray-900.underline.bg-transparent.border-0.cursor-pointer.self-center{type: "button", onclick: "printCard(#{req.bikes_label_data.to_json}, #{req.requestor_name.to_json}, #{req.phone.to_json}, #{req.due_date.strftime('%-m/%-d/%Y').to_json})"} Print
 
   - if pagy.pages > 1

@@ -37,16 +37,21 @@ Nested routes:
 
 ## Bike Requests
 
-Distributions submit bike requests to a production. One request = one person.
+Distributions submit bike requests to a production. One request = one person with one or more bikes.
 
-Model: `BikeRequest` — fields: `phone` (10 digits exactly, no formatting), `requestor_name`, `due_date`, `recipient_name`, `bike_type` (enum: male/female/kid), `age`, `height`, `notes`, `status` (enum), `assignee_id`
+Model: `BikeRequest` — fields: `phone` (10 digits exactly, no formatting), `requestor_name`, `due_date`, `status` (enum)
 
-Status flow: `requested` → `pending` → `completed` → `delivered` → `distributed`
+Each request `has_many :bikes`. `Bike` fields: `name` (optional), `bike_type` (enum: any/male/female/kid, default any), `age`, `height`, `notes` (all optional), `completed` (boolean).
 
-- `pending`: sets `assignee` to the factory worker who claimed it
-- Back-transitions are allowed at each step
+Status flow: `pending (1)` → production approves → `requested (0)` → `completed (2)` → `delivered (3)` → `distributed (4)`. Production can also deny: `pending` → `denied (5)` → distribution edits and resubmits → `pending`.
+
+- New requests default to `pending`; production must approve before they enter the work queue
+- Denied cards show a red outline in the distribution's pending tab
+- Each bike row has Done/Undo buttons (production view); all bikes completed auto-advances the card to `completed`; uncompleting a bike on a completed card reverts it to `requested`
+- Back-transitions allowed at each step (completed ↔ delivered ↔ distributed)
 
 Routes:
 - `GET /distributions/:distribution_id/bike_requests/new` — new request form (distribution access)
 - `POST /distributions/:distribution_id/bike_requests` — create (distribution access)
-- `PATCH /bike_requests/:id` — update status (production access)
+- `GET /bike_requests/:id/edit` — edit pending/denied request (distribution access)
+- `PATCH /bike_requests/:id` — approve/deny/status update (production) or resubmit (distribution)
